@@ -16,12 +16,34 @@ let port = args.p || 3000;
 
 let app = express();
 
-app.get('/', function (req, res) {
-    //res.json({});
+// file extension middleware
+app.use((req, res, next) =>
+{
+    if (req.url.endsWith('.json'))
+    {
+        req.headers.accept = 'application/json';
+        req.url = req.url.slice(0, -'.json'.length);
+    }
+    else if (req.url.endsWith('.jsonld'))
+    {
+        req.headers.accept = 'application/ld+json';
+        req.url = req.url.slice(0, -'.jsonld'.length);
+    }
+    else if (req.url.endsWith('.nt') || req.url.endsWith('.nq'))
+    {
+        req.headers.accept = 'application/n-quads';
+        req.url = req.url.slice(0, -'.nt'.length);
+    }
+    next();
+});
+
+
+app.get('/', (req, res) => {
     res.sendStatus(200);
 });
 
-app.get('/npm/:package', function (req, res) {
+app.get('/npm/:package', (req, res) => {
+    console.log(req.headers);
     let db = new NpmCouchDb('http://localhost:5984/npm2/');
     db.getPackage(req.params.package).then(json =>
     {
@@ -38,7 +60,7 @@ app.get('/npm/:package', function (req, res) {
     });
 });
 
-app.get('/npm/:package/:version', function (req, res) {
+app.get('/npm/:package/:version', (req, res) => {
     let db = new NpmCouchDb('http://localhost:5984/npm2/');
     db.getPackage(req.params.package).then(json =>
     {
@@ -59,6 +81,6 @@ app.get('/npm/:package/:version', function (req, res) {
     });
 });
 
-app.listen(port, function () {
+app.listen(port, () => {
     console.log(`Listening on port ${port}.`);
 });
