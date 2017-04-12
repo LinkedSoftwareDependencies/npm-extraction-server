@@ -1,0 +1,12 @@
+{
+  "name": "npm-stuff",
+  "version": "0.0.1",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.15.2",
+    "jsonld": "^0.4.11",
+    "lodash": "^4.17.4",
+    "minimist": "^1.2.0",
+    "request": "^2.81.0"
+  }
+}

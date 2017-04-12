@@ -1,0 +1,18 @@
+npm registry https://docs.npmjs.com/misc/registry
+    https://registry.npmjs.org/n3/0.9.1
+    https://skimdb.npmjs.com/registry/
+    https://replicate.npmjs.com/registry/
+documents https://github.com/npm/registry/tree/master/docs
+replication: https://github.com/rvagg/npmjs.org/blob/6793c71165934423f1989f54a754a6691a94f3b0/README.md
+SET UP ADMIN USER ON WINDOWS (and do first-time setup?)
+http://www.clock.co.uk/blog/how-to-create-a-private-npmjs-repository
+https://blog.nodeswat.com/what-i-learned-from-analysing-1-65m-versions-of-node-js-modules-in-npm-a0299a614318
+API doc: http://docs.couchdb.org/en/2.0.0/api/
+
+[error] 2017-04-12T08:42:21.180000Z couchdb@localhost <0.3156.0> -------- Replicator: couldn't write document `gdbmi-parser`, revision `1-0d642069fbccb252e5753b6f44d06321`, to target database `http://127.0.0.1:5984/npm/`. Error: `forbidden`, reason: `Please log in before writing to the db`.
+    ? https://issues.apache.org/jira/browse/COUCHDB-3142
+    
+    
+{"source":"https://skimdb.npmjs.com/registry/","target":"http://admin:password@127.0.0.1:5984/example-database"}
+
+curl -X POST http://127.0.0.1:5984/_replicate -d "{\"source\": \"https://replicate.npmjs.com/registry/\", \"target\":\"http://test:test@127.0.0.1:5984/npm2\", \"create_target\":true}" -H "Content-Type: application/json"
