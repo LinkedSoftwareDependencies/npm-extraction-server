@@ -44,11 +44,14 @@ app.get('/:package/:version', function (req, res) {
     {
         let pkg = new NpmPackage(json, 'http://example.org/npm/');
         let version = pkg.getVersion(req.params.version);
-        res.format({
-            'application/ld+json': () => { res.send(version.getJsonLd()); },
-            'application/json': () => { res.send(version.getJson()); },
-            'application/n-quads': () => jsonld.toRDF(version.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => {if (err) throw new Error(err); res.send(nquads); })
-        });
+        if (version.getJson().version !== req.params.version)
+            res.redirect(303, `/${req.params.package}/${version.getJson().version}`);
+        else
+            res.format({
+                'application/ld+json': () => { res.send(version.getJsonLd()); },
+                'application/json': () => { res.send(version.getJson()); },
+                'application/n-quads': () => jsonld.toRDF(version.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => {if (err) throw new Error(err); res.send(nquads); })
+            });
     }).catch(e =>
     {
         console.error(e);
