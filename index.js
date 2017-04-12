@@ -43,14 +43,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/npm/:package', (req, res) => {
-    console.log(req.headers);
     let db = new NpmCouchDb('http://localhost:5984/npm2/');
     db.getPackage(req.params.package).then(json =>
     {
         let pkg = new NpmPackage(json, `http://${req.get('Host')}/npm/`);
         res.format({
-            'application/ld+json': () => { res.send(pkg.getJsonLd()); },
             'application/json': () => { res.send(pkg.getJson()); },
+            'application/ld+json': () => { res.send(pkg.getJsonLd()); },
             'application/n-quads': () => jsonld.toRDF(pkg.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => {if (err) throw new Error(err); res.send(nquads); })
         });
     }).catch(e =>
@@ -70,8 +69,8 @@ app.get('/npm/:package/:version', (req, res) => {
             res.redirect(303, `/npm/${req.params.package}/${version.getJson().version}`);
         else
             res.format({
-                'application/ld+json': () => { res.send(version.getJsonLd()); },
                 'application/json': () => { res.send(version.getJson()); },
+                'application/ld+json': () => { res.send(version.getJsonLd()); },
                 'application/n-quads': () => jsonld.toRDF(version.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => {if (err) throw new Error(err); res.send(nquads); })
             });
     }).catch(e =>
