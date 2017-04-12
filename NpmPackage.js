@@ -1,5 +1,6 @@
 
 const _ = require('lodash');
+const semver = require('semver');
 const NpmPackageVersion = require('./NpmPackageVersion');
 
 class NpmPackage
@@ -23,6 +24,9 @@ class NpmPackage
     
     getVersion (version)
     {
+        version = semver.maxSatisfying(Object.keys(this.json.versions), version);
+        if (version === null)
+            return version;
         return new NpmPackageVersion(this.json.versions[version], this.getUri() + '/');
     }
     
