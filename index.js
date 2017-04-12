@@ -21,11 +21,11 @@ app.get('/', function (req, res) {
     res.sendStatus(200);
 });
 
-app.get('/:package', function (req, res) {
+app.get('/npm/:package', function (req, res) {
     let db = new NpmCouchDb('http://localhost:5984/npm2/');
     db.getPackage(req.params.package).then(json =>
     {
-        let pkg = new NpmPackage(json, 'http://example.org/npm/');
+        let pkg = new NpmPackage(json, `http://${req.get('Host')}/npm/`);
         res.format({
             'application/ld+json': () => { res.send(pkg.getJsonLd()); },
             'application/json': () => { res.send(pkg.getJson()); },
@@ -38,14 +38,14 @@ app.get('/:package', function (req, res) {
     });
 });
 
-app.get('/:package/:version', function (req, res) {
+app.get('/npm/:package/:version', function (req, res) {
     let db = new NpmCouchDb('http://localhost:5984/npm2/');
     db.getPackage(req.params.package).then(json =>
     {
-        let pkg = new NpmPackage(json, 'http://example.org/npm/');
+        let pkg = new NpmPackage(json, `http://${req.get('Host')}/npm/`);
         let version = pkg.getVersion(req.params.version);
         if (version.getJson().version !== req.params.version)
-            res.redirect(303, `/${req.params.package}/${version.getJson().version}`);
+            res.redirect(303, `/npm/${req.params.package}/${version.getJson().version}`);
         else
             res.format({
                 'application/ld+json': () => { res.send(version.getJsonLd()); },
