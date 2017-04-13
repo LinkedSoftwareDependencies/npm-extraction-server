@@ -57,8 +57,13 @@ class NpmModule
             'maintainers': 'doap:maintainer',
             'license': { '@id': 'doap:license', '@type': '@id'},
             'homepage': { '@id': 'doap:homepage', '@type': '@id' },
-            'repository': { '@id': 'doap:repository', '@type': '@id' }
+            'repository': { '@id': 'doap:repository', '@type': '@id' },
+            'email': 'foaf:mbox'
         };
+        let foafContext = { 'name': 'foaf:name' };
+        if (clone.author) clone.author['@context'] = foafContext;
+        if (clone._npmUser) clone._npmUser['@context'] = foafContext;
+        if (clone.maintainers) clone.maintainers.map(m => m['@context'] = foafContext);
         clone.time = _.fromPairs(_.map(clone.time, (time, key) => [key, { '@value': time, '@type': 'xsd:dateTime'}]));
     
         return clone;
