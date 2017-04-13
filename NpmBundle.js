@@ -38,7 +38,7 @@ class NpmBundle
         clone.versions = { '@list': _.map(clone.versions, json => moduleId(json)) };
         clone['dist-tags'] = _.fromPairs(_.map(clone['dist-tags'], (version, key) => [key, moduleId(this.json.versions[version])]));
         clone['@id'] = this.getUri();
-        clone['@type'] = 'http://npm.example.org/package';
+        clone['@type'] = 'http://npm.example.org/bundle';
         clone['@context'] = { '@vocab': 'http://npm.example.org/', 'xsd': 'http://www.w3.org/2001/XMLSchema#' };
         clone.time = _.fromPairs(_.map(clone.time, (time, key) => [key, { '@value': time, '@type': 'xsd:dateTime'}]));
         

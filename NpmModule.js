@@ -25,7 +25,7 @@ class NpmModule
     
         let clone = _.clone(this.json);
         clone['@id'] = this.getUri();
-        clone['@type'] = 'http://npm.example.org/versionedPackage';
+        clone['@type'] = 'http://npm.example.org/module';
         clone['@context'] = { '@vocab': 'http://npm.example.org/', 'xsd': 'http://www.w3.org/2001/XMLSchema#' };
     
         return clone;
