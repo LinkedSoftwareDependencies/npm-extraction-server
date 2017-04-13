@@ -19,7 +19,7 @@ class NpmBundle
     
     getUri ()
     {
-        return this.rootUri + this.json.name;
+        return this.rootUri + this.json._id;
     }
     
     getModule (version)
@@ -35,11 +35,39 @@ class NpmBundle
         let moduleId = (moduleJson) => { return { '@id': (new NpmModule(moduleJson, this.getUri() + '/')).getUri() } };
         
         let clone = _.clone(this.json);
-        clone.versions = { '@list': _.map(clone.versions, json => moduleId(json)) };
+        // TODO: could also just keep them in here and use '@container': '@index' context?
+        clone.versions = _.map(clone.versions, json => moduleId(json));
         clone['dist-tags'] = _.fromPairs(_.map(clone['dist-tags'], (version, key) => [key, moduleId(this.json.versions[version])]));
-        clone['@id'] = this.getUri();
-        clone['@type'] = 'http://npm.example.org/bundle';
-        clone['@context'] = { '@vocab': 'http://npm.example.org/', 'xsd': 'http://www.w3.org/2001/XMLSchema#' };
+        if (clone.license)
+            clone.license = 'https://opensource.org/licenses/' + clone.license;
+        if (clone.repository && clone.repository.url)
+        {
+            let repository = { '@id': clone.repository.url };
+            if (clone.repository.type === 'git')
+                repository['@type'] = 'doap:GitRepository';
+            else if (clone.repository.type === 'svn')
+                repository['@type'] = 'doap:SVNRepository';
+            else if (clone.repository.type === 'cvs')
+                repository['@type'] = 'doap:CVSRepository';
+            // ...
+            clone.repository = repository;
+        }
+        clone['@type'] = 'doap:Project';
+        clone['@context'] = {
+            '@vocab': 'http://npm.example.org/',
+            '@base': this.rootUri,
+            'xsd': 'http://www.w3.org/2001/XMLSchema#',
+            'doap': 'http://usefulinc.com/ns/doap#',
+            'name': 'doap:name',
+            'description': 'doap:description',
+            'url': '@id',
+            '_id': '@id',
+            'versions': 'doap:release',
+            'maintainers': 'doap:maintainer',
+            'license': { '@id': 'doap:license', '@type': '@id'},
+            'homepage': { '@id': 'doap:homepage', '@type': '@id' },
+            'repository': { '@id': 'doap:repository', '@type': '@id' }
+        };
         clone.time = _.fromPairs(_.map(clone.time, (time, key) => [key, { '@value': time, '@type': 'xsd:dateTime'}]));
         
         return clone;
