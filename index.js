@@ -2,7 +2,7 @@
 const _ = require('lodash');
 const express = require('express');
 const NpmCouchDb = require('./NpmCouchDb');
-const NpmPackage = require('./NpmPackage');
+const NpmBundle = require('./NpmBundle');
 const jsonld = require('jsonld');
 
 let args = require('minimist')(process.argv.slice(2));
@@ -51,7 +51,7 @@ function respond(req, res, jsonFunc, jsonLdFunc, ntFunc)
             else if (req._filetype === 'jsonld')
                 jsonLdFunc(data => res.type('json').send(data));
             else if (req._filetype === 'nt' || req._filetype === 'nq')
-                ntFunc(data => res.send(data));
+                ntFunc(data => res.type('text').send(data));
         }
     });
 }
@@ -61,7 +61,7 @@ app.get('/npm/:package', (req, res) => {
     
     db.getPackage(req.params.package).then(json =>
     {
-        let pkg = new NpmPackage(json, `http://${req.get('Host')}/npm/`);
+        let pkg = new NpmBundle(json, `http://${req.get('Host')}/npm/`);
         respond(req, res,
             (f) => f(pkg.getJson()),
             (f) => f(pkg.getJsonLd()),
@@ -78,8 +78,8 @@ app.get('/npm/:package/:version', (req, res) => {
     let db = new NpmCouchDb(couchUrl);
     db.getPackage(req.params.package).then(json =>
     {
-        let pkg = new NpmPackage(json, `http://${req.get('Host')}/npm/`);
-        let version = pkg.getVersion(req.params.version);
+        let pkg = new NpmBundle(json, `http://${req.get('Host')}/npm/`);
+        let version = pkg.getModule(req.params.version);
         if (version.getJson().version !== req.params.version)
             res.redirect(303, version.getUri());
         else

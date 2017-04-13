@@ -1,8 +1,7 @@
 
 const _ = require('lodash');
 
-// TODO: Module
-class NpmPackageVersion
+class NpmModule
 {
     constructor (json, rootUri)
     {
@@ -33,4 +32,4 @@ class NpmPackageVersion
     }
 }
 
-module.exports = NpmPackageVersion;
+module.exports = NpmModule;
