@@ -6,13 +6,14 @@ const NpmPackage = require('./NpmPackage');
 const jsonld = require('jsonld');
 
 let args = require('minimist')(process.argv.slice(2));
-if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'p', 'r'])))
+if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'p', 'c', 'd'])) || !args.p || !args.c)
 {
-    console.error('usage: node demo.js [-p port] [--help]');
+    console.error('usage: node index.js -p port -c CouchDB_Url [-d domain_name]');
     return process.exit((args.h || args.help) ? 0 : 1);
 }
 
-let port = args.p || 3000;
+let port = args.p;
+let couchUrl = args.c;
 
 let app = express();
 
@@ -56,7 +57,7 @@ function respond(req, res, jsonFunc, jsonLdFunc, ntFunc)
 }
 
 app.get('/npm/:package', (req, res) => {
-    let db = new NpmCouchDb('http://localhost:5984/npm2/');
+    let db = new NpmCouchDb(couchUrl);
     
     db.getPackage(req.params.package).then(json =>
     {
@@ -74,7 +75,7 @@ app.get('/npm/:package', (req, res) => {
 });
 
 app.get('/npm/:package/:version', (req, res) => {
-    let db = new NpmCouchDb('http://localhost:5984/npm2/');
+    let db = new NpmCouchDb(couchUrl);
     db.getPackage(req.params.package).then(json =>
     {
         let pkg = new NpmPackage(json, `http://${req.get('Host')}/npm/`);
