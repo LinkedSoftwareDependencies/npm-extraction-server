@@ -1,6 +1,7 @@
 
 const _ = require('lodash');
 
+// TODO: Module
 class NpmPackageVersion
 {
     constructor (json, rootUri)

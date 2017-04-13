@@ -19,21 +19,14 @@ let app = express();
 // file extension middleware
 app.use((req, res, next) =>
 {
-    if (req.url.endsWith('.json'))
+    // provide visualization for browsers
+    if (req.accepts('text/html') && (req.url.endsWith('.json') || req.url.endsWith('.jsonld') || req.url.endsWith('.nt') || req.url.endsWith('.nq')))
     {
-        req.headers.accept = 'application/json';
-        req.url = req.url.slice(0, -'.json'.length);
+        let idx = req.url.lastIndexOf('.');
+        req._filetype = req.url.substring(idx+1).toLowerCase();
+        req.url = req.url.substring(0, idx);
     }
-    else if (req.url.endsWith('.jsonld'))
-    {
-        req.headers.accept = 'application/ld+json';
-        req.url = req.url.slice(0, -'.jsonld'.length);
-    }
-    else if (req.url.endsWith('.nt') || req.url.endsWith('.nq'))
-    {
-        req.headers.accept = 'application/n-quads';
-        req.url = req.url.slice(0, -'.nt'.length);
-    }
+    
     next();
 });
 
@@ -42,16 +35,37 @@ app.get('/', (req, res) => {
     res.sendStatus(200);
 });
 
+function respond(req, res, jsonFunc, jsonLdFunc, ntFunc)
+{
+    res.format({
+        'application/json': () => jsonFunc(data => res.send(data)),
+        'application/ld+json': () => jsonLdFunc(data => res.send(data)),
+        'application/n-quads': () => ntFunc(data => res.send(data)),
+        'text/html': () =>
+        {
+            if (!req._filetype)
+                req._filetype = 'json';
+            if (req._filetype === 'json')
+                jsonFunc(data => res.type('json').send(data));
+            else if (req._filetype === 'jsonld')
+                jsonLdFunc(data => res.type('json').send(data));
+            else if (req._filetype === 'nt' || req._filetype === 'nq')
+                ntFunc(data => res.send(data));
+        }
+    });
+}
+
 app.get('/npm/:package', (req, res) => {
     let db = new NpmCouchDb('http://localhost:5984/npm2/');
+    
     db.getPackage(req.params.package).then(json =>
     {
         let pkg = new NpmPackage(json, `http://${req.get('Host')}/npm/`);
-        res.format({
-            'application/json': () => { res.send(pkg.getJson()); },
-            'application/ld+json': () => { res.send(pkg.getJsonLd()); },
-            'application/n-quads': () => jsonld.toRDF(pkg.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => {if (err) throw new Error(err); res.send(nquads); })
-        });
+        respond(req, res,
+            (f) => f(pkg.getJson()),
+            (f) => f(pkg.getJsonLd()),
+            (f) => jsonld.toRDF(pkg.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => {if (err) throw new Error(err); f(nquads); })
+        );
     }).catch(e =>
     {
         console.error(e);
@@ -66,13 +80,13 @@ app.get('/npm/:package/:version', (req, res) => {
         let pkg = new NpmPackage(json, `http://${req.get('Host')}/npm/`);
         let version = pkg.getVersion(req.params.version);
         if (version.getJson().version !== req.params.version)
-            res.redirect(303, `/npm/${req.params.package}/${version.getJson().version}`);
+            res.redirect(303, version.getUri());
         else
-            res.format({
-                'application/json': () => { res.send(version.getJson()); },
-                'application/ld+json': () => { res.send(version.getJsonLd()); },
-                'application/n-quads': () => jsonld.toRDF(version.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => {if (err) throw new Error(err); res.send(nquads); })
-            });
+            respond(req, res,
+                (f) => f(version.getJson()),
+                (f) => f(version.getJsonLd()),
+                (f) => jsonld.toRDF(version.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => {if (err) throw new Error(err); f(nquads); })
+            );
     }).catch(e =>
     {
         console.error(e);

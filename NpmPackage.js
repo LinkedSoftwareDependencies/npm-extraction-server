@@ -3,6 +3,7 @@ const _ = require('lodash');
 const semver = require('semver');
 const NpmPackageVersion = require('./NpmPackageVersion');
 
+// TODO: Bundle
 class NpmPackage
 {
     constructor (json, rootUri)
