@@ -38,7 +38,7 @@ class NpmBundle
         // TODO: could also just keep them in here and use '@container': '@index' context?
         clone.versions = _.map(clone.versions, json => moduleId(json));
         clone['dist-tags'] = _.fromPairs(_.map(clone['dist-tags'], (version, key) => [key, moduleId(this.json.versions[version])]));
-        if (clone.license)
+        if (clone.license) // TODO: assert this URL is valid
             clone.license = 'https://opensource.org/licenses/' + clone.license;
         if (clone.repository && clone.repository.url)
         {
@@ -63,6 +63,9 @@ class NpmBundle
             'url': '@id',
             '_id': '@id',
             'versions': 'doap:release',
+            'version': 'doap:revision',
+            'dist': 'doap:file-release',
+            'bugs': 'bug-database',
             'maintainers': 'doap:maintainer',
             'license': { '@id': 'doap:license', '@type': '@id'},
             'homepage': { '@id': 'doap:homepage', '@type': '@id' },
