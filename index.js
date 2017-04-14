@@ -13,7 +13,7 @@ if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'p
 }
 
 let port = args.p;
-let couchUrl = args.c;
+let couchDB = new NpmCouchDb(args.c);
 
 let app = express();
 
@@ -56,10 +56,9 @@ function respond(req, res, jsonFunc, jsonLdFunc, ntFunc)
     });
 }
 
-app.get('/npm/:package', (req, res) => {
-    let db = new NpmCouchDb(couchUrl);
-    
-    db.getPackage(req.params.package).then(json =>
+app.get('/npm/:package', (req, res) =>
+{
+    couchDB.getPackage(req.params.package).then(json =>
     {
         let pkg = new NpmBundle(json, `http://${req.get('Host')}/npm/`);
         respond(req, res,
@@ -74,9 +73,9 @@ app.get('/npm/:package', (req, res) => {
     });
 });
 
-app.get('/npm/:package/:version', (req, res) => {
-    let db = new NpmCouchDb(couchUrl);
-    db.getPackage(req.params.package).then(json =>
+app.get('/npm/:package/:version', (req, res) =>
+{
+    couchDB.getPackage(req.params.package).then(json =>
     {
         let pkg = new NpmBundle(json, `http://${req.get('Host')}/npm/`);
         let version = pkg.getModule(req.params.version);
@@ -92,6 +91,17 @@ app.get('/npm/:package/:version', (req, res) => {
     {
         console.error(e);
         res.status(500).send(e);
+    });
+});
+
+// TODO: or maybe go with /npm/user/:user and /npm/package/:package
+app.get('/npmUser/:user', (req, res) =>
+{
+    couchDB.getUserPackageList(req.params.user).then(list =>
+    {
+        respond(req, res,
+            (f) => f(list)
+        );
     });
 });
 

@@ -8,12 +8,12 @@ SET UP ADMIN USER ON WINDOWS (and do first-time setup?)
 http://www.clock.co.uk/blog/how-to-create-a-private-npmjs-repository
 https://blog.nodeswat.com/what-i-learned-from-analysing-1-65m-versions-of-node-js-modules-in-npm-a0299a614318
 API doc: http://docs.couchdb.org/en/2.0.0/api/
-
-[error] 2017-04-12T08:42:21.180000Z couchdb@localhost <0.3156.0> -------- Replicator: couldn't write document `gdbmi-parser`, revision `1-0d642069fbccb252e5753b6f44d06321`, to target database `http://127.0.0.1:5984/npm/`. Error: `forbidden`, reason: `Please log in before writing to the db`.
-    ? https://issues.apache.org/jira/browse/COUCHDB-3142
     
-    
-{"source":"https://skimdb.npmjs.com/registry/","target":"http://admin:password@127.0.0.1:5984/example-database"}
+CouchDB
+    views: http://guide.couchdb.org/draft/views.html
+    views API: https://wiki.apache.org/couchdb/HTTP_view_API
+        https://replicate.npmjs.com/_design/app/_view/byUser?key=%22rubenverborgh%22
+    search: http://docs.couchdb.org/en/2.0.0/api/database/find.html
 
 curl -X POST http://127.0.0.1:5984/_replicate -d "{\"source\": \"https://replicate.npmjs.com/registry/\", \"target\":\"http://test:test@127.0.0.1:5984/npm2\", \"create_target\":true}" -H "Content-Type: application/json"
 

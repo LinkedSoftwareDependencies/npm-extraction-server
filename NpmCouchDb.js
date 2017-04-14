@@ -8,35 +8,33 @@ class NpmCouchDb
         this.request = request.defaults({baseUrl: couchURI});
     }
     
-    all ()
+    _promise(url, dataFunc)
     {
-        // TODO: generic promise creator?
-        // TODO: streaming?
         return new Promise((resolve, reject) =>
         {
-            this.request.get('_all_docs', (error, response, body) =>
+            this.request.get(url, (error, response, body) =>
             {
                 if (error)
                     return reject(error);
-    
-                // TODO: check if JSON parsing is necessary
-                resolve(JSON.parse(body).rows.map(row => row.id)); // TODO: id or key?
+            
+                resolve(dataFunc(JSON.parse(body)));
             });
         });
     }
     
+    all ()
+    {
+        return this._promise('_all_docs', data => data.rows.map(row => row.id));
+    }
+    
     getPackage (name)
     {
-        return new Promise((resolve, reject) =>
-        {
-            this.request.get(name, (error, response, body) =>
-            {
-                if (error)
-                    return reject(error);
-                
-                resolve(JSON.parse(body));
-            });
-        });
+        return this._promise(name, data => data);
+    }
+    
+    getUserPackageList (name)
+    {
+        return this._promise(`_design/app/_view/byUser?key="${name}"`, data => data.rows.map(row => row.id));
     }
 }
 
