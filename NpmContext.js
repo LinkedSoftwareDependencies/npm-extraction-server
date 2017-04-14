@@ -21,11 +21,11 @@ class NpmContext
             json.repository = repository;
         }
         
-        // TODO: making URIs is dangerous
+        // TODO: making URIs is dangerous (also requires some URI hacking)
         let dependencies = ['dependencies', 'devDependencies', 'peerDependencies', 'bundledDependencies', 'optionalDependencies'];
         for (let key of dependencies)
             if (json[key])
-                json[key] = _.map(json[key], (version, pkg) => base + pkg + '/' + version);
+                json[key] = _.map(json[key], (version, pkg) => base.substring(0, base.lastIndexOf('/') + 1) + pkg + '/' + version);
         
         json['@context'] = {
             '@vocab': 'http://npm.example.org/',
