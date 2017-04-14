@@ -2,7 +2,7 @@ npm registry https://docs.npmjs.com/misc/registry
     https://registry.npmjs.org/n3/0.9.1
     https://skimdb.npmjs.com/registry/
     https://replicate.npmjs.com/registry/
-documents https://github.com/npm/registry/tree/master/docs
+documentation https://github.com/npm/registry/tree/master/docs
 replication: https://github.com/rvagg/npmjs.org/blob/6793c71165934423f1989f54a754a6691a94f3b0/README.md
 SET UP ADMIN USER ON WINDOWS (and do first-time setup?)
 http://www.clock.co.uk/blog/how-to-create-a-private-npmjs-repository
@@ -16,3 +16,29 @@ API doc: http://docs.couchdb.org/en/2.0.0/api/
 {"source":"https://skimdb.npmjs.com/registry/","target":"http://admin:password@127.0.0.1:5984/example-database"}
 
 curl -X POST http://127.0.0.1:5984/_replicate -d "{\"source\": \"https://replicate.npmjs.com/registry/\", \"target\":\"http://test:test@127.0.0.1:5984/npm2\", \"create_target\":true}" -H "Content-Type: application/json"
+
+bundle ontology TODO:
+    dist-tags
+    time
+    users -> people that starred npm project? https://github.com/npm/npm-registry-client/blob/debec76884db8092c2c7a21ab5b4ed083f8ce2c9/lib/star.js
+    readme
+    readmeFileName -> deprecated?
+    _rev
+
+module ontology TODO:
+    _from
+    _id
+    _nodeversion
+    _npmOperationalInternal
+    _npmUser
+    _npmVersion
+    _shasum
+    devDependencies
+    engines
+    gitHead
+    main
+    pre-commit
+    scripts
+    testling
+    host
+    tmp

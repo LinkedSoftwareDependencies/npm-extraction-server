@@ -24,6 +24,7 @@ class NpmModule
     {
         let clone = _.clone(this.json);
         NpmContext.addContext(clone, this.rootUri);
+        clone['@type'] = 'doap:Version';
     
         // TODO: can't use this since _id is package@version here...
         delete clone['@context']._id;

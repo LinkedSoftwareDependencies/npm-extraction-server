@@ -20,13 +20,18 @@ class NpmContext
             // ...
             json.repository = repository;
         }
-        json['@type'] = 'doap:Project';
+        
+        // TODO: making URIs is dangerous
+        let dependencies = ['dependencies', 'devDependencies', 'peerDependencies', 'bundledDependencies', 'optionalDependencies'];
+        for (let key of dependencies)
+            if (json[key])
+                json[key] = _.map(json[key], (version, pkg) => base + pkg + '/' + version);
+        
         json['@context'] = {
             '@vocab': 'http://npm.example.org/',
             '@base': base,
             'xsd': 'http://www.w3.org/2001/XMLSchema#',
             'doap': 'http://usefulinc.com/ns/doap#',
-            'foaf': 'http://xmlns.com/foaf/0.1/',
             'name': 'doap:name',
             'description': 'doap:description',
             'url': '@id',
@@ -34,12 +39,18 @@ class NpmContext
             'versions': 'doap:release',
             'version': 'doap:revision',
             'dist': 'doap:file-release',
-            'bugs': 'bug-database',
+            'bugs': 'doap:bug-database',
             'maintainers': 'doap:maintainer',
             'license': { '@id': 'doap:license', '@type': '@id'},
             'homepage': { '@id': 'doap:homepage', '@type': '@id' },
             'repository': { '@id': 'doap:repository', '@type': '@id' },
-            'email': 'foaf:mbox'
+    
+            'foaf': 'http://xmlns.com/foaf/0.1/',
+            'author': 'foaf:maker',
+            'email': 'foaf:mbox',
+            
+            'dc': 'http://purl.org/dc/terms/subject',
+            'keywords': 'dc:subject'
         };
         
         let foafContext = { 'name': 'foaf:name' };

@@ -38,6 +38,7 @@ class NpmBundle
         let clone = _.clone(this.json);
         
         NpmContext.addContext(clone, this.rootUri);
+        clone['@type'] = 'doap:Project';
         
         // TODO: could also just keep them in here and use '@container': '@index' context?
         clone.versions = _.map(clone.versions, json => moduleId(json));
