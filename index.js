@@ -47,9 +47,9 @@ function respond(req, res, jsonFunc, jsonLdFunc, ntFunc)
             if (!req._filetype)
                 req._filetype = 'json';
             if (req._filetype === 'json')
-                jsonFunc(data => res.type('json').send(data));
+                jsonFunc(data => res.type('json').send(JSON.stringify(data, null, 2)));
             else if (req._filetype === 'jsonld')
-                jsonLdFunc(data => res.type('json').send(data));
+                jsonLdFunc(data => res.type('json').send(JSON.stringify(data, null, 2)));
             else if (req._filetype === 'nt' || req._filetype === 'nq')
                 ntFunc(data => res.type('text').send(data));
         }
