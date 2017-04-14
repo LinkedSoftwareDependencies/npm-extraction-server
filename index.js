@@ -1,9 +1,10 @@
 
 const _ = require('lodash');
 const express = require('express');
+const jsonld = require('jsonld');
 const NpmCouchDb = require('./NpmCouchDb');
 const NpmBundle = require('./NpmBundle');
-const jsonld = require('jsonld');
+const NpmUser = require('./NpmUser');
 
 let args = require('minimist')(process.argv.slice(2));
 if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'p', 'c', 'd'])) || !args.p || !args.c)
@@ -36,22 +37,24 @@ app.get('/', (req, res) => {
     res.sendStatus(200);
 });
 
-function respond(req, res, jsonFunc, jsonLdFunc, ntFunc)
+function respond(req, res, thingy)
 {
+    let nquadsFunc = dataFunc => jsonld.toRDF(thingy.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => { if (err) throw new Error(err); dataFunc(nquads); });
+    
     res.format({
-        'application/json': () => jsonFunc(data => res.send(data)),
-        'application/ld+json': () => jsonLdFunc(data => res.send(data)),
-        'application/n-quads': () => ntFunc(data => res.send(data)),
+        'application/json': () => res.send(thingy.getJson()),
+        'application/ld+json': () => res.send(thingy.getJsonLd()),
+        'application/n-quads': () => nquadsFunc(data => res.send(data)),
         'text/html': () =>
         {
             if (!req._filetype)
                 req._filetype = 'json';
             if (req._filetype === 'json')
-                jsonFunc(data => res.type('json').send(JSON.stringify(data, null, 2)));
+                res.type('json').send(JSON.stringify(thingy.getJson(), null, 2));
             else if (req._filetype === 'jsonld')
-                jsonLdFunc(data => res.type('json').send(JSON.stringify(data, null, 2)));
+                res.type('json').send(JSON.stringify(thingy.getJsonLd(), null, 2));
             else if (req._filetype === 'nt' || req._filetype === 'nq')
-                ntFunc(data => res.type('text').send(data));
+                nquadsFunc(data => res.type('text').send(data));
         }
     });
 }
@@ -61,11 +64,7 @@ app.get('/npm/:package', (req, res) =>
     couchDB.getPackage(req.params.package).then(json =>
     {
         let pkg = new NpmBundle(json, `http://${req.get('Host')}/npm/`);
-        respond(req, res,
-            (f) => f(pkg.getJson()),
-            (f) => f(pkg.getJsonLd()),
-            (f) => jsonld.toRDF(pkg.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => {if (err) throw new Error(err); f(nquads); })
-        );
+        respond(req, res, pkg);
     }).catch(e =>
     {
         console.error(e);
@@ -82,11 +81,7 @@ app.get('/npm/:package/:version', (req, res) =>
         if (version.getJson().version !== req.params.version)
             res.redirect(303, version.getUri() + (req._filetype ? '.' + req._filetype : ''));
         else
-            respond(req, res,
-                (f) => f(version.getJson()),
-                (f) => f(version.getJsonLd()),
-                (f) => jsonld.toRDF(version.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => {if (err) throw new Error(err); f(nquads); })
-            );
+            respond(req, res, version);
     }).catch(e =>
     {
         console.error(e);
@@ -99,9 +94,12 @@ app.get('/npmUser/:user', (req, res) =>
 {
     couchDB.getUserPackageList(req.params.user).then(list =>
     {
-        respond(req, res,
-            (f) => f(list)
-        );
+        let user = new NpmUser(req.params.user, list, `http://${req.get('Host')}/npmUser/`);
+        respond(req, res, user);
+    }).catch(e =>
+    {
+        console.error(e);
+        res.status(500).send(e);
     });
 });
 
