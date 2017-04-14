@@ -81,7 +81,7 @@ app.get('/npm/:package/:version', (req, res) => {
         let pkg = new NpmBundle(json, `http://${req.get('Host')}/npm/`);
         let version = pkg.getModule(req.params.version);
         if (version.getJson().version !== req.params.version)
-            res.redirect(303, version.getUri());
+            res.redirect(303, version.getUri() + (req._filetype ? '.' + req._filetype : ''));
         else
             respond(req, res,
                 (f) => f(version.getJson()),
