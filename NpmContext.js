@@ -49,7 +49,7 @@ class NpmContext
             'author': 'foaf:maker',
             'email': 'foaf:mbox',
             
-            'dc': 'http://purl.org/dc/terms/subject',
+            'dc': 'http://purl.org/dc/terms/',
             'keywords': 'dc:subject'
         };
         
