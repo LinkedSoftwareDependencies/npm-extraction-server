@@ -27,6 +27,7 @@ app.use((req, res, next) =>
         let idx = req.url.lastIndexOf('.');
         req._filetype = req.url.substring(idx+1).toLowerCase();
         req.url = req.url.substring(0, idx);
+        res.set('Link', `<http://${req.get('Host')}${req.url}>; rel="canonical"`);
     }
     
     next();
