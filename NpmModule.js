@@ -5,7 +5,6 @@ const NpmContext = require('./NpmContext');
 
 class NpmModule extends Module
 {
-    // TODO: don't put json in constructor?
     constructor (name, version, rootUri, dataAccessor)
     {
         super(rootUri);
