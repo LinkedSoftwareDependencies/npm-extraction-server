@@ -33,7 +33,7 @@ module ontology TODO:
     _npmUser
     _npmVersion
     _shasum
-    devDependencies
+    devDependencies (+ ...)
     engines
     gitHead
     main

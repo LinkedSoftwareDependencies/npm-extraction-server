@@ -1,5 +1,6 @@
 
 const _ = require('lodash');
+const NpmUser = require('./NpmUser');
 
 class NpmContext
 {
@@ -50,10 +51,17 @@ class NpmContext
                 'keywords': 'dc:subject'
             };
     
-            let foafContext = { 'name': 'foaf:name' };
-            if (json.author) json.author['@context'] = foafContext;
-            if (json._npmUser) json._npmUser['@context'] = foafContext;
-            if (json.maintainers) json.maintainers.map(m => m['@context'] = foafContext);
+            if (json.author) json.author['@context'] = { 'name': 'foaf:name' };
+            if (json._npmUser)
+            {
+                json._npmUser['@id'] = new NpmUser(json._npmUser.name, thingy.rootUri, thingy.dataAccessor).getUri();
+                delete json._npmUser.name;
+            }
+            for (let maintainer of (json.maintainers || []))
+            {
+                maintainer['@id'] = new NpmUser(maintainer.name, thingy.rootUri, thingy.dataAccessor).getUri();
+                delete maintainer.name;
+            }
     
             return json;
         });

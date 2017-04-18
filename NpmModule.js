@@ -45,8 +45,13 @@ class NpmModule extends Module
     
             let dependencies = ['dependencies', 'devDependencies', 'peerDependencies', 'bundledDependencies', 'optionalDependencies'];
             for (let key of dependencies)
+            {
                 if (json[key])
+                {
+                    json['@context'][key] = { '@type': '@id'};
                     json[key] = _.map(json[key], (version, pkg) => new NpmModule(pkg, version, this.rootUri, this.dataAccessor).getUri());
+                }
+            }
     
             // TODO: can't use this since _id is package@version here...
             delete json['@context']._id;
