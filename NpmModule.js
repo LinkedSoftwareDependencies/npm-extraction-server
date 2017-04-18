@@ -5,12 +5,14 @@ const NpmContext = require('./NpmContext');
 
 class NpmModule extends Module
 {
-    constructor (name, version, rootUri, dataAccessor)
+    // TODO: find better way to provide userMap as module
+    constructor (name, version, rootUri, userMap, dataAccessor)
     {
         super(rootUri);
         this.name = name;
         this.version = version;
         this.rootUri = rootUri;
+        this.userMap = userMap;
         this.dataAccessor = dataAccessor;
     }
     
@@ -37,6 +39,12 @@ class NpmModule extends Module
         return encodeURI(this.getBaseUri() + this.version);
     }
     
+    
+    getUserMap ()
+    {
+        return new Promise(resolve => resolve(this.userMap));
+    }
+    
     getJsonLd ()
     {
         return NpmContext.addContext(this).then(json =>
@@ -49,7 +57,7 @@ class NpmModule extends Module
                 if (json[key])
                 {
                     json['@context'][key] = { '@type': '@id'};
-                    json[key] = _.map(json[key], (version, pkg) => new NpmModule(pkg, version, this.rootUri, this.dataAccessor).getUri());
+                    json[key] = _.map(json[key], (version, pkg) => new NpmModule(pkg, version, this.rootUri).getUri());
                 }
             }
     

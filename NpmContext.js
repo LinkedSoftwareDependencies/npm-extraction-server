@@ -1,13 +1,12 @@
 
 const _ = require('lodash');
-const NpmUser = require('./NpmUser');
 
 class NpmContext
 {
     // adds generic JSON-LD context that is applicable to both npm bundles and modules
     static addContext (thingy)
     {
-        return thingy.getJson().then(json =>
+        return Promise.all([thingy.getJson(), thingy.getUserMap()]).then(([json, userMap]) =>
         {
             json = _.clone(json); // don't destroy original json
             if (json.license) // TODO: assert this URL is valid
@@ -52,18 +51,38 @@ class NpmContext
                 'keywords': 'dc:subject'
             };
     
-            if (json.author) json.author['@context'] = { 'name': 'foaf:name' };
-            if (json.contributors) json.contributors.map(c => c['@context'] = { 'name': 'foaf:name' });
+            const NpmUser = require('./NpmUser');
+            function handlePerson (person, nameIsId)
+            {
+                if (person.email && userMap[person.email])
+                {
+                    let mail = person.email;
+                    person = {};
+                    if (userMap[mail].id)
+                        person['@id'] = new NpmUser(userMap[mail].id, thingy.rootUri, thingy.dataAccessor).getUri();
+                    if (userMap[mail].name)
+                        person['foaf:name'] = userMap[mail].name;
+                    if (userMap[mail].url)
+                        person['foaf:homepage'] = userMap[mail].url;
+                }
+                else if (nameIsId)
+                {
+                    person['@id'] = new NpmUser(person.name, thingy.rootUri, thingy.dataAccessor).getUri();
+                    delete person.name;
+                }
+                else
+                    person['@context'] = { 'name': 'foaf:name' };
+                return person;
+            }
+            
+            if (json.author)
+                json.author = handlePerson(json.author, false);
+            if (json.contributors)
+                json.contributors = json.contributors.map(c => handlePerson(c, false));
             if (json._npmUser)
-            {
-                json._npmUser['@id'] = new NpmUser(json._npmUser.name, thingy.rootUri, thingy.dataAccessor).getUri();
-                delete json._npmUser.name;
-            }
-            for (let maintainer of (json.maintainers || []))
-            {
-                maintainer['@id'] = new NpmUser(maintainer.name, thingy.rootUri, thingy.dataAccessor).getUri();
-                delete maintainer.name;
-            }
+                handlePerson(json._npmUser, true);
+            if (json.maintainers)
+                json.maintainers = json.maintainers.map(m => handlePerson(m, true));
     
             return json;
         });

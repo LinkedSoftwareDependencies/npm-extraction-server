@@ -39,12 +39,59 @@ class NpmBundle extends Bundle
     
     getModule (version)
     {
-        return this.getJson().then(json =>
+        return Promise.all([this.getJson(), this.getUserMap()]).then(([json, userMap]) =>
         {
             let parsedVersion = semver.maxSatisfying(Object.keys(json.versions), version);
             if (!parsedVersion)
                 throw new Error('Unable to resolve version ' + version + ' for bundle ' + this.name);
-            return new NpmModule(this.name, parsedVersion, this.rootUri, this.dataAccessor);
+            return new NpmModule(this.name, parsedVersion, this.rootUri, userMap, this.dataAccessor);
+        });
+    }
+    
+    getUserMap ()
+    {
+        if (this.userMap)
+            return new Promise(resolve => resolve(this.userMap));
+        
+        function handleUser (user, map, isNpmName)
+        {
+            let mail = user.email;
+            if (!mail)
+                return;
+            if (!map[mail])
+                map[mail] = {};
+            if (user.url)
+                map[mail].url = url;
+            if (user.web) // maintainers use web instead of url?
+                map[mail].url = user.web;
+            if (user.name)
+            {
+                if (isNpmName)
+                    map[mail].id = user.name;
+                else
+                    map[mail].name = user.name;
+            }
+        }
+        
+        function handleVersion (version, map)
+        {
+            if (version.author)
+                handleUser(version.author, map, false);
+            if (version._npmUser)
+                handleUser(version._npmUser, map, true);
+            (version.contributors || []).forEach(val => handleUser(val, map, false));
+            (version.maintainers || []).forEach(val => handleUser(val, map, true));
+        }
+        
+        // iterate through all versions to map as many e-mail addresses to npm usernames as possible (and hopefully also cover non-npm identities)
+        return this.getJson().then(json =>
+        {
+            let map = {};
+            for (let version in json.versions)
+                handleVersion(json.versions[version], map);
+            handleVersion(json, map);
+            this.userMap = map;
+            return map;
         });
     }
     
@@ -52,7 +99,7 @@ class NpmBundle extends Bundle
     {
         return NpmContext.addContext(this).then(json =>
         {
-            let moduleId = (version) => { return { '@id': new NpmModule(this.name, version, this.rootUri, this.dataAccessor).getUri() } };
+            let moduleId = (version) => { return { '@id': new NpmModule(this.name, version, this.rootUri).getUri() } };
             
             json['@type'] = 'doap:Project';
             

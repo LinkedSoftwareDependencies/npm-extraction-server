@@ -1,10 +1,8 @@
 
 const User = require('./User');
-const NpmBundle = require('./NpmBundle');
 
 class NpmUser extends User
 {
-    // TODO: move "data accessor" into constructor
     constructor (name, rootUri, dataAccessor)
     {
         super(rootUri);
@@ -37,6 +35,7 @@ class NpmUser extends User
     
     getJsonLd ()
     {
+        const NpmBundle = require('./NpmBundle'); // moved here to prevent circular dependency problems
         return this.getJson().then(packages =>
         {
             let result = {
