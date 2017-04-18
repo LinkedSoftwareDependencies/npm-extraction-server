@@ -34,7 +34,7 @@ class NpmModule extends Module
     
     getUri ()
     {
-        return this.getBaseUri() + this.version;
+        return encodeURI(this.getBaseUri() + this.version);
     }
     
     getJsonLd ()
