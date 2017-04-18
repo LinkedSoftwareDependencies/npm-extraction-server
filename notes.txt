@@ -24,7 +24,7 @@ bundle ontology TODO:
     readme
     readmeFileName -> deprecated?
     _rev
-
+`_design/app/_view/byUser?key="${encodeURIComponent(name)}"`
 module ontology TODO:
     _from
     _id

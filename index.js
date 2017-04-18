@@ -39,68 +39,56 @@ app.get('/', (req, res) => {
 
 function respond(req, res, thingy)
 {
-    let nquadsFunc = dataFunc => jsonld.toRDF(thingy.getJsonLd(), {format: 'application/nquads'}, (err, nquads) => { if (err) throw new Error(err); dataFunc(nquads); });
+    let nquads = json =>
+    {
+        return new Promise((resolve, reject) =>
+        {
+            jsonld.toRDF(json, {format: 'application/nquads'}, (err, nquads) => { if (err) reject(new Error(err)); resolve(nquads); });
+        });
+    };
+    
+    let errorHandler = e => { console.error(e); res.status(500).send(e); };
     
     res.format({
-        'application/json': () => res.send(thingy.getJson()),
-        'application/ld+json': () => res.send(thingy.getJsonLd()),
-        'application/n-quads': () => nquadsFunc(data => res.send(data)),
+        'application/json': () => thingy.getJson().then(data => res.send(data)).catch(errorHandler),
+        'application/ld+json': () => thingy.getJsonLd().then(json => res.send(json)).catch(errorHandler),
+        'application/n-quads': () => thingy.getJsonLd().then(nquads).then(data => res.send(data)).catch(errorHandler),
         'text/html': () =>
         {
             if (!req._filetype)
                 req._filetype = 'json';
             if (req._filetype === 'json')
-                res.type('json').send(JSON.stringify(thingy.getJson(), null, 2));
+                thingy.getJson().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
             else if (req._filetype === 'jsonld')
-                res.type('json').send(JSON.stringify(thingy.getJsonLd(), null, 2));
+                thingy.getJsonLd().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
             else if (req._filetype === 'nt' || req._filetype === 'nq')
-                nquadsFunc(data => res.type('text').send(data));
+                thingy.getJsonLd().then(nquads).then(data => res.type('text').send(data)).catch(errorHandler);
         }
     });
 }
 
-app.get('/npm/:package', (req, res) =>
+app.get('/bundles/npm/:package', (req, res) =>
 {
-    couchDB.getPackage(req.params.package).then(json =>
-    {
-        let pkg = new NpmBundle(json, `http://${req.get('Host')}/npm/`);
-        respond(req, res, pkg);
-    }).catch(e =>
-    {
-        console.error(e);
-        res.status(500).send(e);
-    });
+    let pkg = new NpmBundle(req.params.package, `http://${req.get('Host')}/`, couchDB);
+    respond(req, res, pkg);
 });
 
-app.get('/npm/:package/:version', (req, res) =>
+app.get('/bundles/npm/:package/:version', (req, res) =>
 {
-    couchDB.getPackage(req.params.package).then(json =>
+    let pkg = new NpmBundle(req.params.package, `http://${req.get('Host')}/`, couchDB);
+    pkg.getModule(req.params.version).then(module =>
     {
-        let pkg = new NpmBundle(json, `http://${req.get('Host')}/npm/`);
-        let version = pkg.getModule(req.params.version);
-        if (version.getJson().version !== req.params.version)
-            res.redirect(303, version.getUri() + (req._filetype ? '.' + req._filetype : ''));
+        if (module.version !== req.params.version)
+            res.redirect(303, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
         else
-            respond(req, res, version);
-    }).catch(e =>
-    {
-        console.error(e);
-        res.status(500).send(e);
-    });
+            respond(req, res, module);
+    }).catch(e => { console.error(e); res.status(500).send(e); });
 });
 
-// TODO: or maybe go with /npm/user/:user and /npm/package/:package
-app.get('/npmUser/:user', (req, res) =>
+app.get('/users/npm/:user', (req, res) =>
 {
-    couchDB.getUserPackageList(req.params.user).then(list =>
-    {
-        let user = new NpmUser(req.params.user, list, `http://${req.get('Host')}/npmUser/`);
-        respond(req, res, user);
-    }).catch(e =>
-    {
-        console.error(e);
-        res.status(500).send(e);
-    });
+    let user = new NpmUser(req.params.user, `http://${req.get('Host')}/`, couchDB);
+    respond(req, res, user);
 });
 
 app.listen(port, () => {

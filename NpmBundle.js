@@ -1,51 +1,68 @@
 
 const _ = require('lodash');
 const semver = require('semver');
+const Bundle = require('./Bundle');
 const NpmModule = require('./NpmModule');
 const NpmContext = require('./NpmContext');
 
-class NpmBundle
+class NpmBundle extends Bundle
 {
-    constructor (json, rootUri)
+    constructor (name, rootUri, dataAccessor)
     {
-        // TODO: verify structure?
-        this.json = json;
+        super(rootUri);
+        this.name = name;
         this.rootUri = rootUri;
+        this.dataAccessor = dataAccessor;
+    }
+    
+    getBaseUri ()
+    {
+        return super.getBaseUri() + 'npm/';
     }
     
     getJson ()
     {
-        return this.json;
+        if (this.json)
+            return new Promise(resolve => resolve(this.json));
+        
+        return this.dataAccessor.getPackage(this.name).then(json =>
+        {
+            this.json = json;
+            return this.getJson();
+        });
     }
     
     getUri ()
     {
-        return this.rootUri + this.json._id;
+        return this.getBaseUri() + this.name;
     }
     
     getModule (version)
     {
-        version = semver.maxSatisfying(Object.keys(this.json.versions), version);
-        if (version === null)
-            return version;
-        return new NpmModule(this.json.versions[version], this.getUri() + '/');
+        return this.getJson().then(json =>
+        {
+            let parsedVersion = semver.maxSatisfying(Object.keys(json.versions), version);
+            if (!parsedVersion)
+                throw new Error('Unable to resolve version ' + version + ' for bundle ' + this.name);
+            return new NpmModule(this.name, parsedVersion, this.rootUri, this.dataAccessor);
+        });
     }
     
     getJsonLd ()
     {
-        let moduleId = (moduleJson) => { return { '@id': (new NpmModule(moduleJson, this.getUri() + '/')).getUri() } };
-        
-        let clone = _.clone(this.json);
-        
-        NpmContext.addContext(clone, this.rootUri);
-        clone['@type'] = 'doap:Project';
-        
-        // TODO: could also just keep them in here and use '@container': '@index' context?
-        clone.versions = _.map(clone.versions, json => moduleId(json));
-        clone['dist-tags'] = _.fromPairs(_.map(clone['dist-tags'], (version, key) => [key, moduleId(this.json.versions[version])]));
-        clone.time = _.fromPairs(_.map(clone.time, (time, key) => [key, { '@value': time, '@type': 'xsd:dateTime'}]));
-        
-        return clone;
+        return NpmContext.addContext(this).then(json =>
+        {
+            let moduleId = (version) => { return { '@id': new NpmModule(this.name, version, this.rootUri, this.dataAccessor).getUri() } };
+            
+            json['@type'] = 'doap:Project';
+            
+            // TODO: could also just keep them in here and use '@container': '@index' context?
+            json.versions = _.map(json.versions, (json, version) => moduleId(version));
+            json['dist-tags'] = _.fromPairs(_.map(json['dist-tags'], (version, key) => [key, moduleId(version)]));
+            json.time = _.fromPairs(_.map(json.time, (time, key) => [key, { '@value': time, '@type': 'xsd:dateTime'}]));
+            
+            return json;
+        });
     }
 }
 

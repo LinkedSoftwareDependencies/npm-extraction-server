@@ -8,7 +8,7 @@ class NpmCouchDb
         this.request = request.defaults({baseUrl: couchURI});
     }
     
-    _promise(url, dataFunc)
+    _promise(url)
     {
         return new Promise((resolve, reject) =>
         {
@@ -17,7 +17,7 @@ class NpmCouchDb
                 if (error)
                     return reject(error);
             
-                resolve(dataFunc(JSON.parse(body)));
+                resolve(JSON.parse(body));
             });
         });
     }
@@ -29,12 +29,17 @@ class NpmCouchDb
     
     getPackage (name)
     {
-        return this._promise(name, data => data);
+        return this._promise(name);
+    }
+    
+    getVersion (name, version)
+    {
+        return this._promise(name).then(json => json.versions[version]);
     }
     
     getUserPackageList (name)
     {
-        return this._promise(`_design/app/_view/byUser?key="${name}"`, data => data.rows.map(row => row.id));
+        return this._promise(`_design/app/_view/byUser?key="${name}"`).then(data => data.rows.map(row => row.id));
     }
 }
 
