@@ -26,22 +26,23 @@ class NpmContext
             }
     
             json['@context'] = {
-                '@vocab'     : 'http://npm.example.org/',
-                '@base'      : thingy.getBaseUri(),
-                'xsd'        : 'http://www.w3.org/2001/XMLSchema#',
-                'doap'       : 'http://usefulinc.com/ns/doap#',
-                'name'       : 'doap:name',
-                'description': 'doap:description',
-                'url'        : '@id',
-                '_id'        : '@id',
-                'versions'   : 'doap:release',
-                'version'    : 'doap:revision',
-                'dist'       : 'doap:file-release',
-                'bugs'       : 'doap:bug-database',
-                'maintainers': 'doap:maintainer',
-                'license'    : { '@id': 'doap:license', '@type': '@id' },
-                'homepage'   : { '@id': 'doap:homepage', '@type': '@id' },
-                'repository' : { '@id': 'doap:repository', '@type': '@id' },
+                '@vocab'      : 'http://npm.example.org/',
+                '@base'       : thingy.getBaseUri(),
+                'xsd'         : 'http://www.w3.org/2001/XMLSchema#',
+                'doap'        : 'http://usefulinc.com/ns/doap#',
+                'name'        : 'doap:name',
+                'description' : 'doap:description',
+                'url'         : '@id',
+                '_id'         : '@id',
+                'versions'    : 'doap:release',
+                'version'     : 'doap:revision',
+                'dist'        : 'doap:file-release',
+                'bugs'        : 'doap:bug-database',
+                'maintainers' : 'doap:maintainer',
+                'contributors': 'doap:developer',
+                'license'     : { '@id': 'doap:license', '@type': '@id' },
+                'homepage'    : { '@id': 'doap:homepage', '@type': '@id' },
+                'repository'  : { '@id': 'doap:repository', '@type': '@id' },
         
                 'foaf'  : 'http://xmlns.com/foaf/0.1/',
                 'author': 'foaf:maker',
@@ -52,6 +53,7 @@ class NpmContext
             };
     
             if (json.author) json.author['@context'] = { 'name': 'foaf:name' };
+            if (json.contributors) json.contributors.map(c => c['@context'] = { 'name': 'foaf:name' });
             if (json._npmUser)
             {
                 json._npmUser['@id'] = new NpmUser(json._npmUser.name, thingy.rootUri, thingy.dataAccessor).getUri();
