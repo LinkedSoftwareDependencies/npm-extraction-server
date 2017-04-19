@@ -1,7 +1,7 @@
 
 const _ = require('lodash');
 const express = require('express');
-const jsonld = require('jsonld');
+const JsonLdParser = require('./JsonLdParser');
 const NpmCouchDb = require('./NpmCouchDb');
 const NpmBundle = require('./NpmBundle');
 const NpmUser = require('./NpmUser');
@@ -18,18 +18,28 @@ let couchDB = new NpmCouchDb(args.c);
 
 let app = express();
 
+// json and json-ld are covered separately
+let formatMap = {
+    'nt': 'application/n-triples',
+    'nq': 'application/n-quads',
+    'ttl': 'text/turtle',
+    'trig': 'application/trig'
+};
+
 // file extension middleware
 app.use((req, res, next) =>
 {
-    // provide visualization for browsers
-    if (req.accepts('text/html') && (req.url.endsWith('.json') || req.url.endsWith('.jsonld') || req.url.endsWith('.nt') || req.url.endsWith('.nq')))
+    if (req.accepts('text/html'))
     {
         let idx = req.url.lastIndexOf('.');
-        req._filetype = req.url.substring(idx+1).toLowerCase();
-        req.url = req.url.substring(0, idx);
-        res.set('Link', `<http://${req.get('Host')}${req.url}>; rel="canonical"`);
+        let filetype = req.url.substring(idx + 1).toLowerCase();
+        if (filetype === 'json' || filetype === 'jsonld' || formatMap[filetype])
+        {
+            req._filetype = filetype;
+            req.url = req.url.substring(0, idx);
+            res.set('Link', `<http://${req.get('Host')}${req.url}>; rel="canonical"`);
+        }
     }
-    
     next();
 });
 
@@ -40,32 +50,33 @@ app.get('/', (req, res) => {
 
 function respond(req, res, thingy)
 {
-    let nquads = json =>
-    {
-        return new Promise((resolve, reject) =>
-        {
-            jsonld.toRDF(json, {format: 'application/nquads'}, (err, nquads) => { if (err) reject(new Error(err)); resolve(nquads); });
-        });
-    };
+    function errorHandler (e) { console.error(e); res.status(500).send(e); }
+    function handleFormat (format) { return thingy.getJsonLd().then(json => JsonLdParser.toRDF(json, {format})); }
     
-    let errorHandler = e => { console.error(e); res.status(500).send(e); };
-    
-    res.format({
+    let formatResponses = {
         'application/json': () => thingy.getJson().then(data => res.send(data)).catch(errorHandler),
         'application/ld+json': () => thingy.getJsonLd().then(json => res.send(json)).catch(errorHandler),
-        'application/n-quads': () => thingy.getJsonLd().then(nquads).then(data => res.send(data)).catch(errorHandler),
         'text/html': () =>
         {
             if (!req._filetype)
                 req._filetype = 'json';
             if (req._filetype === 'json')
-                thingy.getJson().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
-            else if (req._filetype === 'jsonld')
-                thingy.getJsonLd().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
-            else if (req._filetype === 'nt' || req._filetype === 'nq')
-                thingy.getJsonLd().then(nquads).then(data => res.type('text').send(data)).catch(errorHandler);
+                return thingy.getJson().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
+            if (req._filetype === 'jsonld')
+                return thingy.getJsonLd().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
+            
+            let type = formatMap[req._filetype];
+            if (!type)
+                return res.sendStatus(404);
+    
+            handleFormat(type).then(data => res.type('text').send(data)).catch(errorHandler);
         }
-    });
+    };
+    
+    for (let type in formatMap)
+        formatResponses[formatMap[type]] = () => handleFormat(formatMap[type]).then(data => res.send(data)).catch(errorHandler);
+    
+    res.format(formatResponses);
 }
 
 app.get('/bundles/npm/:package', (req, res) =>
