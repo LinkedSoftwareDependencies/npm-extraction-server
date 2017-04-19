@@ -57,7 +57,7 @@ class NpmContext
                 if (person.email && userMap[person.email])
                 {
                     let mail = person.email;
-                    person = {};
+                    person = {email: mail};
                     if (userMap[mail].id)
                         person['@id'] = new NpmUser(userMap[mail].id, thingy.rootUri, thingy.dataAccessor).getUri();
                     if (userMap[mail].name)
@@ -80,7 +80,7 @@ class NpmContext
             if (json.contributors)
                 json.contributors = json.contributors.map(c => handlePerson(c, false));
             if (json._npmUser)
-                handlePerson(json._npmUser, true);
+                json._npmUser = handlePerson(json._npmUser, true);
             if (json.maintainers)
                 json.maintainers = json.maintainers.map(m => handlePerson(m, true));
     
