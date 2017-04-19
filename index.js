@@ -56,7 +56,7 @@ function respond(req, res, thingy)
     function handleFormat (format) { return thingy.getJsonLd().then(json => JsonLdParser.toRDF(json, {format})); }
     
     let formatResponses = {
-        'application/json': () => thingy.getJson().then(data => res.send(data)).catch(errorHandler),
+        'application/json': () => thingy.getJsonLd().then(json => res.type('application/ld+json').send(json)).catch(errorHandler),
         'application/ld+json': () => thingy.getJsonLd().then(json => res.send(json)).catch(errorHandler)
     };
     
