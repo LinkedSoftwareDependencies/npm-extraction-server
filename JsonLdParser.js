@@ -10,13 +10,16 @@ class JsonLdParser
         let format = options.format || 'object';
         if (format === 'application/n-quads' || format === 'application/n-triples')
             return jsonld.promises.toRDF(doc, {format: 'application/nquads'});
+    
+        if (format === 'object')
+            return jsonld.promises.toRDF(doc);
         
         if (format !== 'text/turtle' && format !== 'application/trig' && format !== 'application/x-turtle')
             return Promise.reject(new Error('Unsupported format ' + format));
         
         let writer = N3.Writer({ format });
         
-        return jsonld.promises.toRDF(doc, null).then(triples =>
+        return jsonld.promises.toRDF(doc).then(triples =>
         {
             for (let graphName in triples)
                 for (let triple of triples[graphName])
