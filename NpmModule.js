@@ -63,6 +63,7 @@ class NpmModule extends Module
     
             // TODO: can't use this since _id is package@version here...
             delete json['@context']._id;
+            json['@id'] = this.getUri();
     
             return json;
         });
