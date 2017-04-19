@@ -7,13 +7,14 @@ const NpmBundle = require('./NpmBundle');
 const NpmUser = require('./NpmUser');
 
 let args = require('minimist')(process.argv.slice(2));
-if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'p', 'c', 'd'])) || !args.p || !args.c)
+if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'p', 'c', 'd', 'debug'])) || !args.p || !args.c)
 {
-    console.error('usage: node index.js -p port -c CouchDB_Url [-d domain_name]');
+    console.error('usage: node index.js -p port -c CouchDB_Url [-d domain_name] [--html_display]');
     return process.exit((args.h || args.help) ? 0 : 1);
 }
 
 let port = args.p;
+let debug = args.debug;
 let couchDB = new NpmCouchDb(args.c);
 
 let app = express();
@@ -29,7 +30,7 @@ let formatMap = {
 // file extension middleware
 app.use((req, res, next) =>
 {
-    if (req.accepts('text/html'))
+    if (debug && req.accepts('text/html'))
     {
         let idx = req.url.lastIndexOf('.');
         let filetype = req.url.substring(idx + 1).toLowerCase();
@@ -50,13 +51,17 @@ app.get('/', (req, res) => {
 
 function respond(req, res, thingy)
 {
-    function errorHandler (e) { console.error(e); res.status(500).send(e); }
+    function errorHandler (e) { console.error(e); res.status(500).send(e.message || e); }
     function handleFormat (format) { return thingy.getJsonLd().then(json => JsonLdParser.toRDF(json, {format})); }
     
     let formatResponses = {
         'application/json': () => thingy.getJson().then(data => res.send(data)).catch(errorHandler),
-        'application/ld+json': () => thingy.getJsonLd().then(json => res.send(json)).catch(errorHandler),
-        'text/html': () =>
+        'application/ld+json': () => thingy.getJsonLd().then(json => res.send(json)).catch(errorHandler)
+    };
+    
+    // browser-interpretable display of the results
+    if (debug)
+        formatResponses['text/html'] = () =>
         {
             if (!req._filetype)
                 req._filetype = 'json';
@@ -64,14 +69,13 @@ function respond(req, res, thingy)
                 return thingy.getJson().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
             if (req._filetype === 'jsonld')
                 return thingy.getJsonLd().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
-            
+        
             let type = formatMap[req._filetype];
             if (!type)
                 return res.sendStatus(404);
-    
+        
             handleFormat(type).then(data => res.type('text').send(data)).catch(errorHandler);
-        }
-    };
+        };
     
     for (let type in formatMap)
         formatResponses[formatMap[type]] = () => handleFormat(formatMap[type]).then(data => res.send(data)).catch(errorHandler);
@@ -94,7 +98,7 @@ app.get('/bundles/npm/:package/:version', (req, res) =>
             res.redirect(303, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
         else
             respond(req, res, module);
-    }).catch(e => { console.error(e); res.status(500).send(e); });
+    }).catch(e => { console.error(e); res.status(500).send(e.message || e); });
 });
 
 app.get('/users/npm/:user', (req, res) =>
