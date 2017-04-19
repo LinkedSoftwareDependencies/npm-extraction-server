@@ -24,6 +24,7 @@ let app = express();
 let formatMap = {
     'nt': 'application/n-triples',
     'nq': 'application/n-quads',
+    'n3': 'text/n3',
     'ttl': 'text/turtle',
     'trig': 'application/trig'
 };

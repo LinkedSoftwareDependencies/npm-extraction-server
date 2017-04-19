@@ -14,9 +14,6 @@ class JsonLdParser
         if (format === 'object')
             return jsonld.promises.toRDF(doc);
         
-        if (format !== 'text/turtle' && format !== 'application/trig' && format !== 'application/x-turtle')
-            return Promise.reject(new Error('Unsupported format ' + format));
-        
         let writer = N3.Writer({ format });
         
         return jsonld.promises.toRDF(doc).then(triples =>
