@@ -16,6 +16,7 @@ if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'p
 let port = args.p;
 let debug = args.debug;
 let couchDB = new NpmCouchDb(args.c);
+let domain = args.d;
 
 let app = express();
 
@@ -85,13 +86,13 @@ function respond(req, res, thingy)
 
 app.get('/bundles/npm/:package', (req, res) =>
 {
-    let pkg = new NpmBundle(req.params.package, `http://${req.get('Host')}/`, couchDB);
+    let pkg = new NpmBundle(req.params.package, domain || `http://${req.get('Host')}/`, couchDB);
     respond(req, res, pkg);
 });
 
 app.get('/bundles/npm/:package/:version', (req, res) =>
 {
-    let pkg = new NpmBundle(req.params.package, `http://${req.get('Host')}/`, couchDB);
+    let pkg = new NpmBundle(req.params.package, domain || `http://${req.get('Host')}/`, couchDB);
     pkg.getModule(req.params.version).then(module =>
     {
         if (module.version !== req.params.version)
@@ -103,7 +104,7 @@ app.get('/bundles/npm/:package/:version', (req, res) =>
 
 app.get('/users/npm/:user', (req, res) =>
 {
-    let user = new NpmUser(req.params.user, `http://${req.get('Host')}/`, couchDB);
+    let user = new NpmUser(req.params.user, domain || `http://${req.get('Host')}/`, couchDB);
     respond(req, res, user);
 });
 
