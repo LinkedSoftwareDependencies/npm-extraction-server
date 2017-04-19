@@ -60,6 +60,8 @@ class NpmContext
                     person = { email: mail };
                     if (userMap[mail].id)
                         person['@id'] = new NpmUser(userMap[mail].id, thingy.rootUri, thingy.dataAccessor).getUri();
+                    else
+                        person['@id'] = 'mailto:' + person.email;
                     if (userMap[mail].name)
                         person['foaf:name'] = userMap[mail].name;
                     if (userMap[mail].url)
