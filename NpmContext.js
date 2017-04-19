@@ -57,7 +57,7 @@ class NpmContext
                 if (person.email && userMap[person.email])
                 {
                     let mail = person.email;
-                    person = {email: mail};
+                    person = { email: mail };
                     if (userMap[mail].id)
                         person['@id'] = new NpmUser(userMap[mail].id, thingy.rootUri, thingy.dataAccessor).getUri();
                     if (userMap[mail].name)
