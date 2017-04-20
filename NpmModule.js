@@ -24,7 +24,7 @@ class NpmModule extends Module
     getJson ()
     {
         if (this.json)
-            return new Promise(resolve => resolve(this.json));
+            return Promise.resolve(this.json);
         
         // TODO: will do duplicate calls to the DB, so caching might be in order
         return this.dataAccessor.getVersion(this.name, this.version).then(json =>
@@ -42,7 +42,7 @@ class NpmModule extends Module
     
     getUserMap ()
     {
-        return new Promise(resolve => resolve(this.userMap));
+        return Promise.resolve(this.userMap);
     }
     
     getJsonLd ()

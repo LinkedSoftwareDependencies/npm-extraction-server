@@ -19,7 +19,7 @@ class NpmUser extends User
     getJson ()
     {
         if (this.packages)
-            return new Promise(resolve => resolve(this.packages));
+            return Promise.resolve(this.packages);
         
         return this.dataAccessor.getUserPackageList(this.name).then(packages =>
         {

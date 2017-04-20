@@ -23,7 +23,7 @@ class NpmBundle extends Bundle
     getJson ()
     {
         if (this.json)
-            return new Promise(resolve => resolve(this.json));
+            return Promise.resolve(this.json);
         
         return this.dataAccessor.getPackage(this.name).then(json =>
         {
@@ -51,7 +51,7 @@ class NpmBundle extends Bundle
     getUserMap ()
     {
         if (this.userMap)
-            return new Promise(resolve => resolve(this.userMap));
+            return Promise.resolve(this.userMap);
         
         function handleUser (user, map, isNpmName)
         {
