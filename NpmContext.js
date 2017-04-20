@@ -73,15 +73,17 @@ class NpmContext
                     delete person.name;
                 }
                 else
+                {
+                    // this can happen
+                    if (_.isString(person))
+                        person = { name: json.author};
                     person['@context'] = { 'name': 'foaf:name' };
+                }
                 return person;
             }
             
             if (json.author)
             {
-                // this can happen
-                if (_.isString(json.author))
-                    json.author = { name: json.author};
                 json.author = handlePerson(json.author, false);
             }
             if (json.contributors)

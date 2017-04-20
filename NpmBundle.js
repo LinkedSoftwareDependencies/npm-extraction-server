@@ -76,12 +76,7 @@ class NpmBundle extends Bundle
         function handleVersion (version, map)
         {
             if (version.author)
-            {
-                // this can happen
-                if (_.isString(version.author))
-                    version.author = {name: version.author};
                 handleUser(version.author, map, false);
-            }
             if (version._npmUser)
                 handleUser(version._npmUser, map, true);
             // contributors can also be a single object (legacy?)
