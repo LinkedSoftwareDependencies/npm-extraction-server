@@ -33,7 +33,7 @@ class NodeEngineModule extends EngineModule
         {
             this.json = json;
             return json;
-        })
+        });
     }
     
     getJsonLd ()
@@ -46,7 +46,7 @@ class NodeEngineModule extends EngineModule
             clone['@context'] = { '@vocab' : 'http://npm.example.org/', 'owl': 'http://www.w3.org/2002/07/owl#' };
             
             return clone;
-        })
+        });
     }
 }
 

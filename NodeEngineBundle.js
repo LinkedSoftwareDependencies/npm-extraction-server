@@ -29,7 +29,7 @@ class NodeEngineBundle extends EngineBundle
         {
             this.json = json;
             return json;
-        })
+        });
     }
     
     getModule (version)
