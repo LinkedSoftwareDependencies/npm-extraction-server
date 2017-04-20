@@ -17,28 +17,9 @@ CouchDB
 
 curl -X POST http://127.0.0.1:5984/_replicate -d "{\"source\": \"https://replicate.npmjs.com/registry/\", \"target\":\"http://test:test@127.0.0.1:5984/npm2\", \"create_target\":true}" -H "Content-Type: application/json"
 
-bundle ontology TODO:
-    dist-tags
-    time
-    users -> people that starred npm project? https://github.com/npm/npm-registry-client/blob/debec76884db8092c2c7a21ab5b4ed083f8ce2c9/lib/star.js
-    readme
-    readmeFileName -> deprecated?
-    _rev
-`_design/app/_view/byUser?key="${encodeURIComponent(name)}"`
-module ontology TODO:
-    _from
-    _id
-    _nodeversion
-    _npmOperationalInternal
-    _npmUser
-    _npmVersion
-    _shasum
-    devDependencies (+ ...)
-    engines
-    gitHead
-    main
-    pre-commit
-    scripts
-    testling
-    host
-    tmp
+TODO:     
+count # triples generated in total
+add timestamps to modules (both in bundle as in module)
+independent context (/contexts/npm)
+content disposal inline http header
+ontology for remaining predicates
