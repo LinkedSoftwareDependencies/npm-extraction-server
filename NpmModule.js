@@ -68,13 +68,13 @@ class NpmModule extends Module
             
             if (json.engines)
             {
-                for (let engine in json.engines)
+                json.engines = _.map(json.engines, (version, engine) =>
                 {
                     if (engine === 'npm')
-                        json.engines[engine] = new NpmModule(engine, json.engines[engine], this.rootUri).getUri();
+                        return new NpmModule(engine, json.engines[engine], this.rootUri).getUri();
                     else
-                        json.engines[engine] = new NodeEngineModule(engine, json.engines[engine], this.rootUri).getUri();
-                }
+                        return new NodeEngineModule(engine, json.engines[engine], this.rootUri).getUri();
+                });
             }
             
             return json;
