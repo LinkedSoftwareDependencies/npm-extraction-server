@@ -19,7 +19,7 @@ class NpmModule extends Module
     
     getBaseUri ()
     {
-        return super.getBaseUri() + 'npm/' + this.name + '/';
+        return super.getBaseUri() + 'npm/' + encodeURIComponent(this.name) + '/';
     }
     
     getJson ()

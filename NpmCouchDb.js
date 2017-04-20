@@ -29,17 +29,17 @@ class NpmCouchDb
     
     getPackage (name)
     {
-        return this._promise(name);
+        return this._promise(encodeURIComponent(name));
     }
     
     getVersion (name, version)
     {
-        return this._promise(name).then(json => json.versions[version]);
+        return this.getPackage(name).then(json => json.versions[version]);
     }
     
     getUserPackageList (name)
     {
-        return this._promise(`_design/app/_view/byUser?key="${name}"`).then(data => data.rows.map(row => row.id));
+        return this._promise(`_design/app/_view/byUser?key="${encodeURIComponent(name)}"`).then(data => data.rows.map(row => row.id));
     }
 }
 

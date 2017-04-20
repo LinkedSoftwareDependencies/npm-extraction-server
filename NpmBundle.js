@@ -34,7 +34,7 @@ class NpmBundle extends Bundle
     
     getUri ()
     {
-        return this.getBaseUri() + this.name;
+        return this.getBaseUri() + encodeURIComponent(this.name);
     }
     
     getModule (version)
