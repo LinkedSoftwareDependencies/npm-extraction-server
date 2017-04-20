@@ -98,7 +98,7 @@ app.get('/bundles/npm/:package/:version', (req, res) =>
     pkg.getModule(req.params.version).then(module =>
     {
         if (module.version !== req.params.version)
-            res.redirect(303, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
+            res.redirect(307, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
         else
             respond(req, res, module);
     }).catch(e => { console.error(e); res.status(500).send(e.message || e); });
@@ -116,7 +116,7 @@ app.get('/engines/:engine/:version', (req, res) =>
     engine.getModule(req.params.version).then(module =>
     {
         if (module.version !== req.params.version)
-            res.redirect(303, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
+            res.redirect(307, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
         else
             respond(req, res, module);
     }).catch(e => { console.error(e); res.status(500).send(e.message || e); });
