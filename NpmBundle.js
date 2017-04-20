@@ -61,7 +61,7 @@ class NpmBundle extends Bundle
             if (!map[mail])
                 map[mail] = {};
             if (user.url)
-                map[mail].url = url;
+                map[mail].url = user.url;
             if (user.web) // maintainers use web instead of url?
                 map[mail].url = user.web;
             if (user.name)
