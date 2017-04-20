@@ -80,7 +80,13 @@ class NpmContext
             if (json.author)
                 json.author = handlePerson(json.author, false);
             if (json.contributors)
+            {
+                // TODO: clean up JSON to remove these problems immediately?
+                // contributors can also be a single object (legacy?)
+                if (!_.isArray(json.contributors))
+                    json.contributors = [json.contributors];
                 json.contributors = json.contributors.map(c => handlePerson(c, false));
+            }
             if (json._npmUser)
                 json._npmUser = handlePerson(json._npmUser, true);
             if (json.maintainers)

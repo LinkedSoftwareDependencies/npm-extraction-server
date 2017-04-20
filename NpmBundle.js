@@ -79,6 +79,9 @@ class NpmBundle extends Bundle
                 handleUser(version.author, map, false);
             if (version._npmUser)
                 handleUser(version._npmUser, map, true);
+            // contributors can also be a single object (legacy?)
+            if (version.contributors && !_.isArray(version.contributors))
+                version.contributors = [version.contributors];
             (version.contributors || []).forEach(val => handleUser(val, map, false));
             (version.maintainers || []).forEach(val => handleUser(val, map, true));
         }
