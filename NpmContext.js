@@ -78,7 +78,12 @@ class NpmContext
             }
             
             if (json.author)
+            {
+                // this can happen
+                if (_.isString(json.author))
+                    json.author = { name: json.author};
                 json.author = handlePerson(json.author, false);
+            }
             if (json.contributors)
             {
                 // TODO: clean up JSON to remove these problems immediately?
