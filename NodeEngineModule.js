@@ -41,8 +41,9 @@ class NodeEngineModule extends EngineModule
         return this.getJson().then(json =>
         {
             let clone = _.clone(json);
-            clone['@id'] = this.engines.urls[this.name].root + this.version;
-            clone['@context'] = { '@vocab' : 'http://npm.example.org/' };
+            clone['@id'] = this.getUri();
+            clone['owl:sameAs'] = { '@id': this.engines.urls[this.name].root + this.version };
+            clone['@context'] = { '@vocab' : 'http://npm.example.org/', 'owl': 'http://www.w3.org/2002/07/owl#' };
             
             return clone;
         })
