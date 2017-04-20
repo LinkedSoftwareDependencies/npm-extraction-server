@@ -5,6 +5,7 @@ const JsonLdParser = require('./JsonLdParser');
 const NpmCouchDb = require('./NpmCouchDb');
 const NpmBundle = require('./NpmBundle');
 const NpmUser = require('./NpmUser');
+const NodeEngineBundle = require('./NodeEngineBundle');
 
 let args = require('minimist')(process.argv.slice(2));
 if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'p', 'c', 'd', 'debug'])) || !args.p || !args.c)
@@ -107,6 +108,18 @@ app.get('/users/npm/:user', (req, res) =>
 {
     let user = new NpmUser(req.params.user, domain || `http://${req.get('Host')}/`, couchDB);
     respond(req, res, user);
+});
+
+app.get('/engines/:engine/:version', (req, res) =>
+{
+    let engine = new NodeEngineBundle(req.params.engine, domain || `http://${req.get('Host')}/`);
+    engine.getModule(req.params.version).then(module =>
+    {
+        if (module.version !== req.params.version)
+            res.redirect(303, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
+        else
+            respond(req, res, module);
+    }).catch(e => { console.error(e); res.status(500).send(e.message || e); });
 });
 
 app.listen(port, () => {

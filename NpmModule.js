@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const Module = require('./Module');
 const NpmContext = require('./NpmContext');
+const NodeEngineModule = require('./NodeEngineModule');
 
 class NpmModule extends Module
 {
@@ -64,7 +65,18 @@ class NpmModule extends Module
             // TODO: can't use this since _id is package@version here...
             delete json['@context']._id;
             json['@id'] = this.getUri();
-    
+            
+            if (json.engines)
+            {
+                for (let engine in json.engines)
+                {
+                    if (engine === 'npm')
+                        json.engines[engine] = new NpmModule(engine, json.engines[engine], this.rootUri).getUri();
+                    else
+                        json.engines[engine] = new NodeEngineModule(engine, json.engines[engine], this.rootUri).getUri();
+                }
+            }
+            
             return json;
         });
     }
