@@ -96,7 +96,7 @@ class NpmContext
             }
             if (json._npmUser)
                 json._npmUser = handlePerson(json._npmUser, true);
-            if (json.maintainers)
+            if (json.maintainers && _.isArray(json.maintainers)) // no guarantee what this is if it is not an array
                 json.maintainers = json.maintainers.map(m => handlePerson(m, true));
     
             return json;

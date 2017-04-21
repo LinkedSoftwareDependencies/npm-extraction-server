@@ -83,7 +83,9 @@ class NpmBundle extends Bundle
             if (version.contributors && !_.isArray(version.contributors))
                 version.contributors = [version.contributors];
             (version.contributors || []).forEach(val => handleUser(val, map, false));
-            (version.maintainers || []).forEach(val => handleUser(val, map, true));
+            // maintainers is set by npm but can be overridden by user?
+            if (version.maintainers && _.isArray(version.maintainers))
+                version.maintainers.forEach(val => handleUser(val, map, true));
         }
         
         // iterate through all versions to map as many e-mail addresses to npm usernames as possible (and hopefully also cover non-npm identities)
