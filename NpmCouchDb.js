@@ -17,6 +17,14 @@ class NpmCouchDb
             {
                 if (error)
                     return reject(error);
+                
+                if (response.statusCode >= 400)
+                {
+                    // TODO: cleaner way to do error handling?
+                    let error = new Error(response.statusCode);
+                    error.name = 'HTTP';
+                    return reject(error);
+                }
             
                 resolve(JSON.parse(body));
             });
