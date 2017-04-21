@@ -55,6 +55,8 @@ class NpmBundle extends Bundle
         
         function handleUser (user, map, isNpmName)
         {
+            if (!user)
+                return;
             let mail = user.email;
             if (!mail)
                 return;

@@ -54,6 +54,8 @@ class NpmContext
             const NpmUser = require('./NpmUser');
             function handlePerson (person, nameIsId)
             {
+                if (!person)
+                    return null;
                 if (person.email && userMap[person.email])
                 {
                     let mail = person.email;
