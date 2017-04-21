@@ -1,11 +1,12 @@
 
+// TODO: so apparently request is bad mmkay
 const request = require('request');
 
 class NpmCouchDb
 {
     constructor (couchURI)
     {
-        this.request = request.defaults({baseUrl: couchURI});
+        this.request = request.defaults({baseUrl: couchURI, forever: true});
     }
     
     _promise(url)
@@ -24,7 +25,7 @@ class NpmCouchDb
     
     all ()
     {
-        return this._promise('_all_docs', data => data.rows.map(row => row.id));
+        return this._promise('_all_docs').then(json => json.rows.map(row => row.id).filter(id => !id.startsWith('_design/')));
     }
     
     getPackage (name)
