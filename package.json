@@ -6,6 +6,7 @@
     "express": "^4.15.2",
     "jsonld": "^0.4.11",
     "lodash": "^4.17.4",
+    "lru-cache": "^4.0.2",
     "minimist": "^1.2.0",
     "n3": "^0.10.0",
     "parse-author": "^2.0.0",
