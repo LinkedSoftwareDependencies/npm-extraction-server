@@ -25,4 +25,3 @@ ontology for remaining predicates
 remove request.js library
 investigate couchDB load handling?
 author can be a single string!
-add way for export to only generate specific entries

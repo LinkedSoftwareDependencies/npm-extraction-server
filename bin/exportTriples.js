@@ -1,5 +1,6 @@
 
 const _ = require('lodash');
+const readline = require('readline');
 const JsonLdParser = require('../lib/util/JsonLdParser');
 const NpmCouchDb = require('../lib/npm/NpmCouchDb');
 const NpmBundle = require('../lib/npm/NpmBundle');
@@ -15,9 +16,9 @@ let formatMap = {
 };
 
 let args = require('minimist')(process.argv.slice(2));
-if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 'f', 's'])) || !args.c || !args.d)
+if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 'f', 's', 'i', 'e'])) || !args.c || !args.d)
 {
-    console.error('usage: node generateTriples.js -c CouchDB -d domain [-f format] [-s start]');
+    console.error('usage: node generateTriples.js -c CouchDB -d domain [-f format] [-s start] [-i]');
     console.error(' options:');
     console.error('  -c CouchDB : Uses the given CouchDB URL');
     console.error('               E.g. "-c http://localhost:5984/npm")');
@@ -28,6 +29,9 @@ if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c
     console.error('               E.g.: "-f nt"');
     console.error('  -s start   : Starts output from the given bundle, ignoring previous bundles.');
     console.error('               Can be used if output got interrupted previously. E.g.: "-s n3"');
+    console.error('  -i         : Read bundle names from stdin instead of parsing all bundles.');
+    console.error('               Names should be separated by newlines.');
+    console.error('  -e         : Print error messages to stderr when a bundle failed.');
     console.error(' supported formats (default is nt):');
     for (let format in formatMap)
         console.error(`    ${format} (${formatMap[format]})`);
@@ -38,19 +42,29 @@ let startBundle = args.s;
 let domain = args.d;
 let format = args.f ? formatMap[args.f] : formatMap['nt'];
 let couchDB = new NpmCouchDb(args.c);
+let input = args.i;
+let errors = args.e;
 
 // TODO: this actually doesn't work atm due to overlapping blank nodes!!!
 // TODO: this doesn't include engines (and people, but all those triples are included in the package triples)
 // TODO: definitely need to change code so we don't call the same entry 400 times if there are 400 versions
-couchDB.all().then(list =>
+if (input)
 {
-    let start_idx = 0;
-    if (startBundle)
-        start_idx = list.indexOf(startBundle);
-    if (start_idx < 0)
-        throw new Error ('Unknown bundle ' + startBundle);
-    exportRecursive(start_idx, list);
-}).catch(console.error);
+    let rl = readline.createInterface({ input: process.stdin });
+    rl.on('line', line => exportRecursive(0, [line]));
+}
+else
+{
+    couchDB.all().then(list =>
+    {
+        let start_idx = 0;
+        if (startBundle)
+            start_idx = list.indexOf(startBundle);
+        if (start_idx < 0)
+            throw new Error('Unknown bundle ' + startBundle);
+        exportRecursive(start_idx, list);
+    }).catch(console.error);
+}
 
 function exportRecursive (idx, list)
 {
@@ -78,6 +92,8 @@ function exportRecursive (idx, list)
     }).catch(e =>
     {
         console.error(list[idx]);
+        if (errors)
+            console.error(e);
         exportRecursive(++idx, list);
     });
 }
