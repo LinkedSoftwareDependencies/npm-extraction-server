@@ -1,6 +1,7 @@
 
 const _ = require('lodash');
 const express = require('express');
+const path = require('path');
 const JsonLdParser = require('../lib/util/JsonLdParser');
 const NpmCouchDb = require('../lib/npm/NpmCouchDb');
 const NpmBundle = require('../lib/npm/NpmBundle');
@@ -54,7 +55,7 @@ app.get('/', (req, res) => {
 
 function handleError (error, res)
 {
-    console.error(error);
+    console.error(JSON.stringify(error, null, 2));
     if (error.name === 'HTTP')
         res.sendStatus(error.message);
     else
@@ -129,6 +130,12 @@ app.get('/engines/:engine/:version', (req, res) =>
         else
             respond(req, res, module);
     }).catch(e => handleError(e, res));
+});
+
+app.get('/contexts/:name', (req, res) =>
+{
+    let p = path.join(__dirname, `../lib/contexts/${encodeURIComponent(req.params.name)}.jsonld`);
+    res.type('application/ld+json').sendFile(p, {}, e => { if (e) res.sendStatus(404) });
 });
 
 app.listen(port, () => {

@@ -17,8 +17,7 @@ CouchDB
 
 curl -X POST http://127.0.0.1:5984/_replicate -d "{\"source\": \"https://replicate.npmjs.com/registry/\", \"target\":\"http://test:test@127.0.0.1:5984/npm2\", \"create_target\":true}" -H "Content-Type: application/json"
 
-TODO:     
-count # triples generated in total
+TODO:
 add timestamps to modules (both in bundle as in module)
 independent context (/contexts/npm)
 ontology for remaining predicates
