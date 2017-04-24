@@ -1,9 +1,9 @@
 
 const _ = require('lodash');
-const JsonLdParser = require('./JsonLdParser');
-const NpmCouchDb = require('./NpmCouchDb');
-const NpmBundle = require('./NpmBundle');
-const NpmModule = require('./NpmModule');
+const JsonLdParser = require('../lib/util/JsonLdParser');
+const NpmCouchDb = require('../lib/npm/NpmCouchDb');
+const NpmBundle = require('../lib/npm/NpmBundle');
+const NpmModule = require('../lib/npm/NpmModule');
 
 let formatMap = {
     'jsonld': 'application/ld+json',

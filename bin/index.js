@@ -1,11 +1,11 @@
 
 const _ = require('lodash');
 const express = require('express');
-const JsonLdParser = require('./JsonLdParser');
-const NpmCouchDb = require('./NpmCouchDb');
-const NpmBundle = require('./NpmBundle');
-const NpmUser = require('./NpmUser');
-const NodeEngineBundle = require('./NodeEngineBundle');
+const JsonLdParser = require('../lib/util/JsonLdParser');
+const NpmCouchDb = require('../lib/npm/NpmCouchDb');
+const NpmBundle = require('../lib/npm/NpmBundle');
+const NpmUser = require('../lib/npm/NpmUser');
+const NodeEngineBundle = require('../lib/npm/NodeEngineBundle');
 
 let args = require('minimist')(process.argv.slice(2));
 if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'p', 'c', 'd', 'debug'])) || !args.p || !args.c)
