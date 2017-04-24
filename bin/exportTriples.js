@@ -77,7 +77,7 @@ function exportRecursive (idx, list)
     {
         let modules = Object.keys(json.versions).map(version =>
         {
-            return new NpmModule(entry, version, 'http://example.org/debug/', userMap, couchDB);
+            return new NpmModule(entry, version, domain, userMap, couchDB);
         });
         
         // generate all entries first so no partial results get output if there is an error

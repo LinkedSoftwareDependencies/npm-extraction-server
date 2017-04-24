@@ -21,4 +21,4 @@ TODO:
 ontology for remaining predicates
 remove request.js library
 investigate couchDB load handling?
-author can be a single string!
+invalid context URI when not running server
