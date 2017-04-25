@@ -21,4 +21,5 @@ TODO:
 ontology for remaining predicates
 remove request.js library
 investigate couchDB load handling?
-invalid context URI when not running server
+add engines when generating triples
+go over TODOs
