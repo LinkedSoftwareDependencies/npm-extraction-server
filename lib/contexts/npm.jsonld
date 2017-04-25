@@ -16,6 +16,7 @@
       "license"      : { "@id": "doap:license", "@type": "@id" },
       "homepage"     : { "@id": "doap:homepage", "@type": "@id" },
       "repository"   : { "@id": "doap:repository", "@type": "@id" },
+      "os"           : "doap:os",
 
       "foaf"   : "http://xmlns.com/foaf/0.1/",
       "author" : "foaf:maker",

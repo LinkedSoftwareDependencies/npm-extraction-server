@@ -20,6 +20,5 @@ curl -X POST http://127.0.0.1:5984/_replicate -d "{\"source\": \"https://replica
 TODO:
 ontology for remaining predicates
 remove request.js library
-investigate couchDB load handling?
 add engines when generating triples
 go over TODOs
