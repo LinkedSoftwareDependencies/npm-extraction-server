@@ -16,7 +16,7 @@ let formatMap = {
 };
 
 let args = require('minimist')(process.argv.slice(2));
-if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 'f', 's', 'i', 'e'])) || !args.c || !args.d)
+if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 't', 's', 'i', 'e'])) || !args.c || !args.d)
 {
     console.error('usage: node generateTriples.js -c CouchDB -d domain [-f format] [-s start] [-i]');
     console.error(' options:');
@@ -25,8 +25,8 @@ if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c
     console.error('  -d domain  : Uses the given domain name as base URI.');
     console.error('               E.g. "-d http://example.org/" results in');
     console.error('               "http://example.org/bundles/npm/n3"');
-    console.error('  -f format  : Output format, see below for a full list of supported formats');
-    console.error('               E.g.: "-f nt"');
+    console.error('  -t type    : Output format, see below for a full list of supported formats');
+    console.error('               E.g.: "-t nt"');
     console.error('  -s start   : Starts output from the given bundle, ignoring previous bundles.');
     console.error('               Can be used if output got interrupted previously. E.g.: "-s n3"');
     console.error('  -i         : Read bundle names from stdin instead of parsing all bundles.');
@@ -40,7 +40,7 @@ if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c
 
 let startBundle = args.s;
 let domain = args.d;
-let format = args.f ? formatMap[args.f] : formatMap['nt'];
+let format = args.t ? formatMap[args.t] : formatMap['nt'];
 let couchDB = new NpmCouchDb(args.c);
 let input = args.i;
 let errors = args.e;
