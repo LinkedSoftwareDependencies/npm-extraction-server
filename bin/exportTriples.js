@@ -47,7 +47,6 @@ let errors = args.e;
 
 // TODO: this actually doesn't work atm due to overlapping blank nodes!!!
 // TODO: this doesn't include engines (and people, but all those triples are included in the package triples)
-// TODO: definitely need to change code so we don't call the same entry 400 times if there are 400 versions
 if (input)
 {
     let rl = readline.createInterface({ input: process.stdin });
