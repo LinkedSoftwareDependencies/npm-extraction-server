@@ -45,7 +45,6 @@ let couchDB = new NpmCouchDb(args.c);
 let input = args.i;
 let errors = args.e;
 
-// TODO: this actually doesn't work atm due to overlapping blank nodes!!!
 // TODO: this doesn't include engines (and people, but all those triples are included in the package triples)
 if (input)
 {

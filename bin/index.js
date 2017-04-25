@@ -53,9 +53,14 @@ app.get('/', (req, res) => {
     res.sendStatus(200);
 });
 
+function getDomain (req)
+{
+    return domain || `http://${req.get('Host')}/`;
+}
+
 function handleError (error, res)
 {
-    console.error(JSON.stringify(error, null, 2));
+    console.error(error);
     if (error.name === 'HTTP')
         res.sendStatus(error.message);
     else
@@ -65,7 +70,7 @@ function handleError (error, res)
 function respond(req, res, thingy)
 {
     function errorHandler (e) { handleError(e, res); }
-    function handleFormat (format) { return thingy.getJsonLd().then(json => JsonLdParser.toRDF(json, {format})); }
+    function handleFormat (format) { return thingy.getJsonLd().then(json => JsonLdParser.toRDF(json, {format: format, root: getDomain(req)})); }
     
     let formatResponses = {
         'application/json': () => thingy.getJsonLd().then(json => res.type('application/ld+json').send(json)).catch(errorHandler),
@@ -98,13 +103,13 @@ function respond(req, res, thingy)
 
 app.get('/bundles/npm/:package', (req, res) =>
 {
-    let pkg = new NpmBundle(req.params.package, domain || `http://${req.get('Host')}/`, couchDB);
+    let pkg = new NpmBundle(req.params.package, getDomain(req), couchDB);
     respond(req, res, pkg);
 });
 
 app.get('/bundles/npm/:package/:version', (req, res) =>
 {
-    let pkg = new NpmBundle(req.params.package, domain || `http://${req.get('Host')}/`, couchDB);
+    let pkg = new NpmBundle(req.params.package, getDomain(req), couchDB);
     pkg.getModule(req.params.version).then(module =>
     {
         if (module.version !== req.params.version)
@@ -116,13 +121,13 @@ app.get('/bundles/npm/:package/:version', (req, res) =>
 
 app.get('/users/npm/:user', (req, res) =>
 {
-    let user = new NpmUser(req.params.user, domain || `http://${req.get('Host')}/`, couchDB);
+    let user = new NpmUser(req.params.user, getDomain(req), couchDB);
     respond(req, res, user);
 });
 
 app.get('/engines/:engine/:version', (req, res) =>
 {
-    let engine = new NodeEngineBundle(req.params.engine, domain || `http://${req.get('Host')}/`);
+    let engine = new NodeEngineBundle(req.params.engine, getDomain(req));
     engine.getModule(req.params.version).then(module =>
     {
         if (module.version !== req.params.version)
