@@ -119,9 +119,9 @@ function exportRecursive (idx, list)
         try
         {
             if (failedFile)
-                fs.appendFileSync(failedFile, list[idx]);
+                fs.appendFileSync(failedFile, list[idx] + '\n');
             if (errorFile)
-                fs.appendFileSync(errorFile + '\n' + e.toString(), list[idx]);
+                fs.appendFileSync(errorFile, list[idx] + '\n' + e.toString() + '\n' + '\n');
         }
         catch (e) { console.error (e); }
         exportRecursive(++idx, list);
