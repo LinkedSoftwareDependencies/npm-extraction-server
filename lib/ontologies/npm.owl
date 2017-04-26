@@ -34,6 +34,13 @@ npm:peerDependency a rdf:property;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
 
+npm:optionalDependency a rdf:property;
+    rdfs:label "optionalDependency";
+    rdfs:comment "a dependency that can be used but is not required";
+    rdfs:isDefinedBy <http://NAMESPACE/npm#> ;
+    rdfs:domain doap:Version;
+    rdfs:range doap:Version.
+
 npm:bundledDependency a rdf:property;
     rdfs:label "bundledDependency";
     rdfs:comment "indicates packages that will be bundled with this release";
