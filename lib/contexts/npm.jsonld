@@ -1,30 +1,36 @@
 {
     "@context":
     {
-      "@vocab"       : "http://npm.example.org/",
-      "xsd"          : "http://www.w3.org/2001/XMLSchema#",
-      "doap"         : "http://usefulinc.com/ns/doap#",
-      "name"         : "doap:name",
-      "description"  : "doap:description",
-      "url"          : "@id",
-      "versions"     : "doap:release",
-      "version"      : "doap:revision",
-      "dist"         : "doap:file-release",
-      "bugs"         : "doap:bug-database",
-      "maintainers"  : "doap:maintainer",
-      "contributors" : "doap:developer",
-      "license"      : { "@id": "doap:license", "@type": "@id" },
-      "homepage"     : { "@id": "doap:homepage", "@type": "@id" },
-      "repository"   : { "@id": "doap:repository", "@type": "@id" },
-      "os"           : "doap:os",
+        "@vocab"       : "http://npm.example.org/",
+        "xsd"          : "http://www.w3.org/2001/XMLSchema#",
 
-      "foaf"   : "http://xmlns.com/foaf/0.1/",
-      "author" : "foaf:maker",
-      "email"  : "foaf:mbox",
+        "url"          : "@id",
 
-      "dcterms"  : "http://purl.org/dc/terms/",
-      "keywords" : "dcterms:subject",
-      "created"  : "dcterms:created",
-      "modified" : "dcterms:modified"
+        "doap"         : "http://usefulinc.com/ns/doap#",
+        "name"         : "doap:name",
+        "versions"     : "doap:release",
+        "version"      : "doap:revision",
+        "dist"         : "doap:file-release",
+        "bugs"         : "doap:bug-database",
+        "maintainers"  : "doap:maintainer",
+        "contributors" : "doap:developer",
+        "license"      : { "@id": "doap:license", "@type": "@id" },
+        "homepage"     : { "@id": "doap:homepage", "@type": "@id" },
+        "repository"   : { "@id": "doap:repository", "@type": "@id" },
+        "os"           : "doap:os",
+
+        "foaf"   : "http://xmlns.com/foaf/0.1/",
+        "author" : "foaf:maker",
+        "email"  : "foaf:mbox",
+
+        "dc"       : "http://purl.org/dc/elements/1.1/",
+        "_npmUser" : "dc:publisher",
+
+        "dcterms"     : "http://purl.org/dc/terms/",
+        "keywords"    : "dcterms:subject",
+        "created"     : "dcterms:created",
+        "modified"    : "dcterms:modified",
+        "description" : "dcterms:abstract",
+        "readme"      : { "@id": "dcterms:description", "@type": "@id" }
     }
 }

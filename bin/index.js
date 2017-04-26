@@ -107,6 +107,18 @@ app.get('/bundles/npm/:package', (req, res) =>
     respond(req, res, pkg);
 });
 
+app.get('/bundles/npm/:package/README', (req, res) =>
+{
+    let pkg = new NpmBundle(req.params.package, getDomain(req), couchDB);
+    pkg.getJson().then(json =>
+    {
+        if (!json.readme)
+            return res.sendStatus(404);
+        
+        res.type('text').send(json.readme);
+    }).catch(e => { console.error(e); res.status(500).send(e.message || e); });
+});
+
 app.get('/bundles/npm/:package/:version', (req, res) =>
 {
     let pkg = new NpmBundle(req.params.package, getDomain(req), couchDB);
