@@ -22,4 +22,5 @@ ontology for remaining predicates
 remove request.js library
 add engines when generating triples
 write errors to file and use stderr for progress
+readme separate resource (about)
 go over TODOs

@@ -1,5 +1,6 @@
 
 const _ = require('lodash');
+const fs = require('fs');
 const readline = require('readline');
 const JsonLdParser = require('../lib/util/JsonLdParser');
 const NpmCouchDb = require('../lib/npm/NpmCouchDb');
@@ -16,9 +17,9 @@ let formatMap = {
 };
 
 let args = require('minimist')(process.argv.slice(2));
-if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 't', 's', 'i', 'e'])) || !args.c || !args.d)
+if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 't', 's', 'i', 'e', 'E'])) || !args.c || !args.d)
 {
-    console.error('usage: node generateTriples.js -c CouchDB -d domain [-f format] [-s start] [-i]');
+    console.error('usage: node generateTriples.js -c CouchDB -d domain [-f format] [-s start] [-i] [-e file] [-E file]');
     console.error(' options:');
     console.error('  -c CouchDB : Uses the given CouchDB URL');
     console.error('               E.g. "-c http://localhost:5984/npm")');
@@ -31,7 +32,8 @@ if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c
     console.error('               Can be used if output got interrupted previously. E.g.: "-s n3"');
     console.error('  -i         : Read bundle names from stdin instead of parsing all bundles.');
     console.error('               Names should be separated by newlines.');
-    console.error('  -e         : Print error messages to stderr when a bundle failed.');
+    console.error('  -e file    : Write failed bundles to the given file.');
+    console.error('  -E file    : Write failed bundles + error messages to the given file.');
     console.error(' supported formats (default is nt):');
     for (let format in formatMap)
         console.error(`    ${format} (${formatMap[format]})`);
@@ -43,16 +45,31 @@ let domain = args.d;
 let format = args.t ? formatMap[args.t] : formatMap['nt'];
 let couchDB = new NpmCouchDb(args.c);
 let input = args.i;
-let errors = args.e;
+let failedFile = args.e;
+let errorFile = args.E;
+let failed = 0;
+
+// clear error files
+if (failedFile && fs.existsSync(failedFile))
+    fs.unlinkSync(failedFile);
+if (errorFile && fs.existsSync(errorFile))
+    fs.unlinkSync(errorFile);
 
 // TODO: this doesn't include engines (and people, but all those triples are included in the package triples)
 if (input)
 {
+    // storing entries in list to have progress indicator
+    let lines = [];
     let rl = readline.createInterface({ input: process.stdin });
-    rl.on('line', line => exportRecursive(0, [line]));
+    rl.on('line', line =>
+    {
+        lines.push(line.trim());
+        exportRecursive(lines.length-1, lines);
+    });
 }
 else
 {
+    process.stderr.write('Loading bundles...');
     couchDB.all().then(list =>
     {
         let start_idx = 0;
@@ -66,8 +83,17 @@ else
 
 function exportRecursive (idx, list)
 {
+    process.stderr.clearLine();
+    process.stderr.cursorTo(0);
+    process.stderr.write(`Exporting bundle ${idx}/${list.length} (${failed} failed)`);
+    
     if (idx >= list.length)
+    {
+        process.stderr.clearLine();
+        process.stderr.cursorTo(0);
+        process.stderr.write(`Exported ${list.length-failed} bundles succesfully (${failed} failed)`);
         return;
+    }
     
     let entry = list[idx];
     let bundle = new NpmBundle(entry, domain, couchDB);
@@ -79,8 +105,8 @@ function exportRecursive (idx, list)
         });
         
         // generate all entries first so no partial results get output if there is an error
-        let promises = modules.map(module => module.getJsonLd().then(json => JsonLdParser.toRDF(json, { format })));
-        promises.push(bundle.getJsonLd().then(json => JsonLdParser.toRDF(json, { format })));
+        let promises = modules.map(module => module.getJsonLd().then(json => JsonLdParser.toRDF(json, { format, root: domain })));
+        promises.push(bundle.getJsonLd().then(json => JsonLdParser.toRDF(json, { format, root: domain })));
         return Promise.all(promises);
     }).then(entries =>
     {
@@ -89,9 +115,15 @@ function exportRecursive (idx, list)
         exportRecursive(++idx, list);
     }).catch(e =>
     {
-        console.error(list[idx]);
-        if (errors)
-            console.error(e);
+        ++failed;
+        try
+        {
+            if (failedFile)
+                fs.appendFileSync(failedFile, list[idx]);
+            if (errorFile)
+                fs.appendFileSync(errorFile + '\n' + e.toString(), list[idx]);
+        }
+        catch (e) { console.error (e); }
         exportRecursive(++idx, list);
     });
 }
