@@ -1,7 +1,7 @@
 {
     "@context":
     {
-        "@vocab"       : "http://npm.example.org/",
+        "@vocab"       : "http://DELETEME/",
         "xsd"          : "http://www.w3.org/2001/XMLSchema#",
 
         "url"          : "@id",
