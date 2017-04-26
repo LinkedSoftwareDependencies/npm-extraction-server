@@ -37,6 +37,7 @@
         "dependencies"        : { "@id": "npm:dependency", "@type": "@id" },
         "devDependencies"     : { "@id": "npm:devDependency", "@type": "@id" },
         "peerDependencies"    : { "@id": "npm:peerDependency", "@type": "@id" },
+        "bundleDependencies"  : { "@id": "npm:bundledDependency", "@type": "@id" },
         "bundledDependencies" : { "@id": "npm:bundledDependency", "@type": "@id" }
     }
 }
