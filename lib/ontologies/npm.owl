@@ -1,0 +1,42 @@
+
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix npm: <http://npm.linkeddatafragments.org/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+<http://npm.linkeddatafragments.org/> a owl:Ontology ;
+     dc:title "The npm ontology" ;
+     # owl:imports ...
+     rdfs:comment "This ontology describes several of the components that appear in an npm package";
+     rdfs:seeAlso <https://docs.npmjs.com/files/package.json>,
+                  <https://github.com/npm/registry/blob/master/docs/REGISTRY-API.md>.
+
+# TODO: range should not be doap:Version, but our own custom object that describes the range
+npm:dependency a rdf:property;
+    rdfs:label "dependency";
+    rdfs:comment "indicates a package dependency";
+    rdfs:isDefinedBy <http://npm.linkeddatafragments.org/> ;
+    rdfs:domain doap:Version;
+    rdfs:range doap:Version.
+
+npm:devDependency a rdf:property;
+    rdfs:label "devDependency";
+    rdfs:comment "indicates a package dependency for development";
+    rdfs:isDefinedBy <http://npm.linkeddatafragments.org/> ;
+    rdfs:domain doap:Version;
+    rdfs:range doap:Version.
+
+npm:peerDependency a rdf:property;
+    rdfs:label "peerDependency";
+    rdfs:comment "indicates compatibility with the given package";
+    rdfs:isDefinedBy <http://npm.linkeddatafragments.org/> ;
+    rdfs:domain doap:Version;
+    rdfs:range doap:Version.
+
+npm:bundledDependency a rdf:property;
+    rdfs:label "bundledDependency";
+    rdfs:comment "indicates packages that will be bundled with this release";
+    rdfs:isDefinedBy <http://npm.linkeddatafragments.org/> ;
+    rdfs:domain doap:Version;
+    rdfs:range doap:Version.
