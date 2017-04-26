@@ -31,6 +31,12 @@
         "created"     : "dcterms:created",
         "modified"    : "dcterms:modified",
         "description" : "dcterms:abstract",
-        "readme"      : { "@id": "dcterms:description", "@type": "@id" }
+        "readme"      : { "@id": "dcterms:description", "@type": "@id" },
+
+        "npm"                 : "http://NAMESPACE/npm#",
+        "dependencies"        : { "@id": "npm:dependency", "@type": "@id" },
+        "devDependencies"     : { "@id": "npm:devDependency", "@type": "@id" },
+        "peerDependencies"    : { "@id": "npm:peerDependency", "@type": "@id" },
+        "bundledDependencies" : { "@id": "npm:bundledDependency", "@type": "@id" }
     }
 }
