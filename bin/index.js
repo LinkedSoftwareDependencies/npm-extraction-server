@@ -155,6 +155,13 @@ app.get('/contexts/:name', (req, res) =>
     res.type('application/ld+json').sendFile(p, {}, e => { if (e) res.sendStatus(404) });
 });
 
+// TODO: do we keep this here, i.e., will this be in the same namespace?
+app.get('/ontologies/:name', (req, res) =>
+{
+    let p = path.join(__dirname, `../lib/ontologies/${encodeURIComponent(req.params.name)}.owl`);
+    res.type('text/turtle').sendFile(p, {}, e => { if (e) res.sendStatus(404) });
+});
+
 app.listen(port, () => {
     console.log(`Listening on port ${port}.`);
 });
