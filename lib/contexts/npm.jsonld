@@ -10,7 +10,7 @@
 
         "doap"         : "http://usefulinc.com/ns/doap#",
         "name"         : "doap:name",
-        "versions"     : "doap:release",
+        "versions"     : { "@id": "doap:release", "@type": "@id", "@container": "@index" },
         "version"      : "doap:revision",
         "dist"         : "doap:file-release",
         "bugs"         : "doap:bug-database",

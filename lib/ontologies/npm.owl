@@ -47,3 +47,10 @@ npm:bundledDependency a rdf:property;
     rdfs:isDefinedBy <http://NAMESPACE/npm#> ;
     rdfs:domain doap:Version;
     rdfs:range doap:Project.
+
+npm:dist-tag a rdf:property;
+    rdfs:label "dist-tag";
+    rdfs:comment "a npm dist-tag associated with this version";
+    rdfs:isDefinedBy <http://NAMESPACE/npm#> ;
+    rdfs:domain doap:Version;
+    rdfs:range rdfs:Literal.
