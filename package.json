@@ -12,6 +12,7 @@
     "parse-author": "^2.0.0",
     "request": "^2.81.0",
     "semver": "^5.3.0",
+    "spdx-expression-parse": "^1.0.4",
     "uuid": "^3.0.1"
   }
 }

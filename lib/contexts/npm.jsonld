@@ -3,6 +3,7 @@
     {
         "@vocab"       : "http://DELETEME/",
         "xsd"          : "http://www.w3.org/2001/XMLSchema#",
+        "rdfs"         : "http://www.w3.org/2000/01/rdf-schema#",
 
         "url"          : "@id",
 
@@ -14,10 +15,13 @@
         "bugs"         : "doap:bug-database",
         "maintainers"  : "doap:maintainer",
         "contributors" : "doap:developer",
-        "license"      : { "@id": "doap:license", "@type": "@id" },
         "homepage"     : { "@id": "doap:homepage", "@type": "@id" },
         "repository"   : { "@id": "doap:repository", "@type": "@id" },
         "os"           : "doap:os",
+
+        "spdx"                      : "http://spdx.org/rdf/terms#",
+        "license"                   : { "@id": "spdx:licenseDeclared", "@type": "@id" },
+        "spdx:licenseInfoFromFiles" : { "@type": "@id"},
 
         "foaf"   : "http://xmlns.com/foaf/0.1/",
         "author" : "foaf:maker",
