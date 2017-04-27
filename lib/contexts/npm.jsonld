@@ -6,6 +6,7 @@
         "rdfs"         : "http://www.w3.org/2000/01/rdf-schema#",
 
         "url"          : "@id",
+        "tarball"      : "@id",
 
         "doap"         : "http://usefulinc.com/ns/doap#",
         "name"         : "doap:name",
@@ -21,6 +22,7 @@
 
         "spdx"                      : "http://spdx.org/rdf/terms#",
         "license"                   : { "@id": "spdx:licenseDeclared", "@type": "@id" },
+        "shasum"                    : "spdx:checksum",
         "spdx:licenseInfoFromFiles" : { "@type": "@id"},
 
         "foaf"   : "http://xmlns.com/foaf/0.1/",
