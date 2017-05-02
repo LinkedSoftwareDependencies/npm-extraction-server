@@ -1,6 +1,8 @@
 
 const _ = require('lodash');
 const fs = require('fs');
+const nock = require('nock');
+const path = require('path');
 const readline = require('readline');
 const JsonLdParser = require('../lib/util/JsonLdParser');
 const NpmCouchDb = require('../lib/npm/NpmCouchDb');
@@ -54,6 +56,13 @@ if (failedFile && fs.existsSync(failedFile))
     fs.unlinkSync(failedFile);
 if (errorFile && fs.existsSync(errorFile))
     fs.unlinkSync(errorFile);
+
+// TODO: change URL when it is fixed
+// set up proxy for context
+nock(domain)
+    .persist()
+    .get('/contexts/npm')
+    .replyWithFile(200, path.join(__dirname, '../lib/contexts/npm.jsonld'), { 'content-type': 'application/ld+json'});
 
 // TODO: this doesn't include engines (and people, but all those triples are included in the package triples)
 if (input)
