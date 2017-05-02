@@ -127,7 +127,25 @@ app.get('/bundles/npm/:package/:version', (req, res) =>
         if (module.version !== req.params.version)
             res.redirect(307, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
         else
-            respond(req, res, module);
+            return respond(req, res, module);
+    }).catch(e => { console.error(e); res.status(500).send(e.message || e); });
+});
+
+app.get('/bundles/npm/:package/:version/scripts/:script', (req, res) =>
+{
+    let pkg = new NpmBundle(req.params.package, getDomain(req), couchDB);
+    pkg.getModule(req.params.version).then(module =>
+    {
+        if (module.version !== req.params.version)
+            return res.redirect(307, module.getUri() + '/scripts/' + req.params.script);
+            
+        return module.getJson().then(json =>
+        {
+            if (!json.scripts || !json.scripts[req.params.script])
+                return res.sendStatus(404);
+            
+            res.type('text').send(json.scripts[req.params.script]);
+        });
     }).catch(e => { console.error(e); res.status(500).send(e.message || e); });
 });
 
@@ -145,7 +163,7 @@ app.get('/engines/:engine/:version', (req, res) =>
         if (module.version !== req.params.version)
             res.redirect(307, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
         else
-            respond(req, res, module);
+            return respond(req, res, module);
     }).catch(e => handleError(e, res));
 });
 
