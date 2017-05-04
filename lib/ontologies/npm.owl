@@ -102,3 +102,10 @@ npm:main a rdf:property
     rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range rdfs:Literal.
+
+npm:pre-commit a rdf:property
+    rdfs:label "pre-commit";
+    rdfs:comment "script to execute before committing";
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:domain doap:Version;
+    rdfs:range npm:Script.

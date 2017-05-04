@@ -53,6 +53,8 @@
         "bundledDependencies"  : { "@id": "npm:bundledDependency",  "@type": "@id" },
         "_nodeVersion"         : { "@id": "npm:nodeVersion",        "@type": "@id" },
         "_npmVersion"          : { "@id": "npm:npmVersion",         "@type": "@id" },
+        "pre-commit"           : { "@id": "npm:pre-commit",         "@type": "@id" },
+        "precommit"            : { "@id": "npm:pre-commit",         "@type": "@id" },
         "gitHead"              : "npm:gitHead",
         "main"                 : "npm:main"
     }
