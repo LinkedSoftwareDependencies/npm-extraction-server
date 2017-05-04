@@ -33,6 +33,7 @@
         "_npmUser"     : "dc:publisher",
 
         "dcterms"      : "http://purl.org/dc/terms/",
+        "_id"          : "dcterms:identifier",
         "keywords"     : "dcterms:subject",
         "created"      : "dcterms:created",
         "ctime"        : "dcterms:created",
