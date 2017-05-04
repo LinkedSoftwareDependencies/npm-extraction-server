@@ -79,7 +79,6 @@ npm:nodeVersion a rdf:property;
     rdfs:label "nodeVersion";
     rdfs:comment "which node version was used to publish this version";
     rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
-    rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
     
@@ -87,6 +86,12 @@ npm:npmVersion a rdf:property;
     rdfs:label "npmVersion";
     rdfs:comment "which npm version was used to publish this version";
     rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
-    rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
+    
+npm:gitHead a rdf:property;
+    rdfs:label "gitHead";
+    rdfs:comment "git head when this version was published";
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:domain doap:Version;
+    rdfs:range rdfs:Literal.
