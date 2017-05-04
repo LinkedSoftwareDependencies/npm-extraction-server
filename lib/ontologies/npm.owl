@@ -13,7 +13,15 @@
      rdfs:seeAlso <https://docs.npmjs.com/files/package.json>,
                   <https://github.com/npm/registry/blob/master/docs/REGISTRY-API.md>.
 
-# TODO: range should not be doap:Version, but our own custom object that describes the range
+
+npm:engine a rdf:property;
+    rdfs:label "engine";
+    rdfs:comment "indicates an engine dependency";
+    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:subPropertyOf dcterms:requires;
+    rdfs:domain doap:Version;
+    rdfs:range doap:Version.
+
 npm:dependency a rdf:property;
     rdfs:label "dependency";
     rdfs:comment "indicates a package dependency";
@@ -64,5 +72,21 @@ npm:maxSatisfying a rdf:property;
     rdfs:label "maxSatisfying";
     rdfs:comment "maps a semantic versioned URI to the maximum satisfying version";
     rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:domain doap:Version;
+    rdfs:range doap:Version.
+    
+npm:nodeVersion a rdf:property;
+    rdfs:label "nodeVersion";
+    rdfs:comment "which node version was used to publish this version";
+    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:subPropertyOf dcterms:requires;
+    rdfs:domain doap:Version;
+    rdfs:range doap:Version.
+    
+npm:npmVersion a rdf:property;
+    rdfs:label "npmVersion";
+    rdfs:comment "which npm version was used to publish this version";
+    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.

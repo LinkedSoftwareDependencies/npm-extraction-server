@@ -43,11 +43,14 @@
         "readme"       : { "@id": "dcterms:description", "@type": "@id" },
 
         "npm"                  : "http://NAMESPACE/npm#",
-        "dependencies"         : { "@id": "npm:dependency", "@type": "@id" },
-        "devDependencies"      : { "@id": "npm:devDependency", "@type": "@id" },
-        "peerDependencies"     : { "@id": "npm:peerDependency", "@type": "@id" },
+        "engine"               : { "@id": "npm:engine",             "@type": "@id" },
+        "dependencies"         : { "@id": "npm:dependency",         "@type": "@id" },
+        "devDependencies"      : { "@id": "npm:devDependency",      "@type": "@id" },
+        "peerDependencies"     : { "@id": "npm:peerDependency",     "@type": "@id" },
         "optionalDependencies" : { "@id": "npm:optionalDependency", "@type": "@id" },
-        "bundleDependencies"   : { "@id": "npm:bundledDependency", "@type": "@id" },
-        "bundledDependencies"  : { "@id": "npm:bundledDependency", "@type": "@id" }
+        "bundleDependencies"   : { "@id": "npm:bundledDependency",  "@type": "@id" },
+        "bundledDependencies"  : { "@id": "npm:bundledDependency",  "@type": "@id" },
+        "_nodeVersion"         : { "@id": "npm:nodeVersion",        "@type": "@id" },
+        "_npmVersion"          : { "@id": "npm:npmVersion",         "@type": "@id" }
     }
 }
