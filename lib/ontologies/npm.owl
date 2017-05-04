@@ -95,3 +95,10 @@ npm:gitHead a rdf:property;
     rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range rdfs:Literal.
+
+npm:main a rdf:property
+    rdfs:label "main";
+    rdfs:comment "the main file to execute";
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:domain doap:Version;
+    rdfs:range rdfs:Literal.

@@ -52,6 +52,7 @@
         "bundledDependencies"  : { "@id": "npm:bundledDependency",  "@type": "@id" },
         "_nodeVersion"         : { "@id": "npm:nodeVersion",        "@type": "@id" },
         "_npmVersion"          : { "@id": "npm:npmVersion",         "@type": "@id" },
-        "gitHead"              : "npm:gitHead"
+        "gitHead"              : "npm:gitHead",
+        "main"                 : "npm:main"
     }
 }
