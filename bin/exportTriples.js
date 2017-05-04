@@ -97,8 +97,14 @@ function errorMessage (error)
 {
     // mostly made for the errors the jsonld library outputs
     let msg = error.toString();
-    if (error.details && error.details.cause)
-        msg += '\n' + errorMessage(error.details.cause);
+    if (error.details)
+    {
+        msg += '\n';
+        if (error.details.cause)
+            msg += errorMessage(error.details.cause);
+        else
+            msg += JSON.stringify(error.details);
+    }
     return msg;
 }
 
