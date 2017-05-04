@@ -35,7 +35,9 @@
         "dcterms"      : "http://purl.org/dc/terms/",
         "keywords"     : "dcterms:subject",
         "created"      : "dcterms:created",
+        "ctime"        : "dcterms:created",
         "modified"     : "dcterms:modified",
+        "mtime"        : "dcterms:created",
         "description"  : "dcterms:abstract",
         "readme"       : { "@id": "dcterms:description", "@type": "@id" },
 
