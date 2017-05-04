@@ -109,3 +109,14 @@ npm:pre-commit a rdf:property
     rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range npm:Script.
+
+npm:key a rdf:property
+    rdfs:label "key";
+    rdfs:comment "used together with npm:value to generically describe the contents of package.json";
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:range npm:Literal.
+
+npm:value a rdf:property
+    rdfs:label "value";
+    rdfs:comment "used together with npm:key to generically describe the contents of package.json";
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>.
