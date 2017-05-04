@@ -3,10 +3,10 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix doap: <http://usefulinc.com/ns/doap#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix npm: <http://NAMESPACE/npm#> .
+@prefix npm: <http://linkedsoftwaredependencies.org/ontologies/npm#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-<http://NAMESPACE/npm#> a owl:Ontology ;
+<http://linkedsoftwaredependencies.org/ontologies/npm#> a owl:Ontology ;
      dc:title "The npm ontology" ;
      # owl:imports ...
      rdfs:comment "This ontology describes several of the components that appear in an npm package";
@@ -17,7 +17,7 @@
 npm:engine a rdf:property;
     rdfs:label "engine";
     rdfs:comment "indicates an engine dependency";
-    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -25,7 +25,7 @@ npm:engine a rdf:property;
 npm:dependency a rdf:property;
     rdfs:label "dependency";
     rdfs:comment "indicates a package dependency";
-    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -33,7 +33,7 @@ npm:dependency a rdf:property;
 npm:devDependency a rdf:property;
     rdfs:label "devDependency";
     rdfs:comment "indicates a package dependency for development";
-    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -41,7 +41,7 @@ npm:devDependency a rdf:property;
 npm:peerDependency a rdf:property;
     rdfs:label "peerDependency";
     rdfs:comment "indicates compatibility with the given package";
-    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -49,7 +49,7 @@ npm:peerDependency a rdf:property;
 npm:optionalDependency a rdf:property;
     rdfs:label "optionalDependency";
     rdfs:comment "a dependency that can be used but is not required";
-    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -57,28 +57,28 @@ npm:optionalDependency a rdf:property;
 npm:bundledDependency a rdf:property;
     rdfs:label "bundledDependency";
     rdfs:comment "indicates packages that will be bundled with this release";
-    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range doap:Project.
 
 npm:dist-tag a rdf:property;
     rdfs:label "dist-tag";
     rdfs:comment "a npm dist-tag associated with this version";
-    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range rdfs:Literal.
 
 npm:maxSatisfying a rdf:property;
     rdfs:label "maxSatisfying";
     rdfs:comment "maps a semantic versioned URI to the maximum satisfying version";
-    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
     
 npm:nodeVersion a rdf:property;
     rdfs:label "nodeVersion";
     rdfs:comment "which node version was used to publish this version";
-    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -86,7 +86,7 @@ npm:nodeVersion a rdf:property;
 npm:npmVersion a rdf:property;
     rdfs:label "npmVersion";
     rdfs:comment "which npm version was used to publish this version";
-    rdfs:isDefinedBy <http://NAMESPACE/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
