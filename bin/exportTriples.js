@@ -90,6 +90,15 @@ else
     }).catch(console.error);
 }
 
+function errorMessage (error)
+{
+    // mostly made for the errors the jsonld library outputs
+    let msg = error.toString();
+    if (error.details && error.details.cause)
+        msg += '\n' + errorMessage(error.details.cause);
+    return msg;
+}
+
 function exportRecursive (idx, list)
 {
     process.stderr.clearLine();
@@ -130,7 +139,7 @@ function exportRecursive (idx, list)
             if (failedFile)
                 fs.appendFileSync(failedFile, list[idx] + '\n');
             if (errorFile)
-                fs.appendFileSync(errorFile, list[idx] + '\n' + e.toString() + '\n' + '\n');
+                fs.appendFileSync(errorFile, list[idx] + '\n' + errorMessage(e) + '\n' + '\n');
         }
         catch (e) { console.error (e); }
         exportRecursive(++idx, list);
