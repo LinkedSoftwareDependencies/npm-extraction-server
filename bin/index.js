@@ -5,6 +5,7 @@ const path = require('path');
 const JsonLdParser = require('../lib/util/JsonLdParser');
 const NpmCouchDb = require('../lib/npm/NpmCouchDb');
 const NpmBundle = require('../lib/npm/NpmBundle');
+const NpmModule = require('../lib/npm/NpmModule');
 const NpmUser = require('../lib/npm/NpmUser');
 const NodeEngineBundle = require('../lib/npm/NodeEngineBundle');
 
@@ -138,10 +139,13 @@ app.get('/bundles/npm/:package/README', (req, res) =>
 app.get('/bundles/npm/:package/:version', (req, res) =>
 {
     let pkg = new NpmBundle(req.params.package, getDomain(req), couchDB);
+    let oldModule = new NpmModule(req.params.package, req.params.version, getDomain(req));
     pkg.getModule(req.params.version).then(module =>
     {
         if (module.version !== req.params.version)
-            res.redirect(307, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
+            res.location(module.getUri() + (req._filetype ? '.' + req._filetype : ''))
+                    .status(307)
+                    .send(`<${oldModule.getUri()}> http://NAMESPACE/npm#maxSatisfying <${module.getUri()}>`);
         else
             return respond(req, res, module);
     }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
