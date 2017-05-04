@@ -134,8 +134,8 @@ function exportRecursive (idx, list)
         });
         
         // generate all entries first so no partial results get output if there is an error
-        let promises = modules.map(module => module.getJsonLd().then(json => JsonLdParser.toRDF(json, { format, root: domain })));
-        promises.push(bundle.getJsonLd().then(json => JsonLdParser.toRDF(json, { format, root: domain })));
+        let promises = modules.map(module => module.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
+        promises.push(bundle.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
         return Promise.all(promises);
     }).then(entries =>
     {
