@@ -50,6 +50,7 @@ let input = args.i;
 let failedFile = args.e;
 let errorFile = args.E;
 let failed = 0;
+let running = false;
 
 // clear error files
 if (failedFile && fs.existsSync(failedFile))
@@ -73,7 +74,9 @@ if (input)
     rl.on('line', line =>
     {
         lines.push(line.trim());
-        exportRecursive(lines.length-1, lines);
+        // prevent weird stuff
+        if (!running)
+            exportRecursive(lines.length-1, lines);
     });
 }
 else
@@ -101,12 +104,14 @@ function errorMessage (error)
 
 function exportRecursive (idx, list)
 {
+    running = true;
     process.stderr.clearLine();
     process.stderr.cursorTo(0);
     process.stderr.write(`Exporting bundle ${idx}/${list.length} (${failed} failed)`);
     
     if (idx >= list.length)
     {
+        running = false;
         process.stderr.clearLine();
         process.stderr.cursorTo(0);
         process.stderr.write(`Exported ${list.length-failed} bundles succesfully (${failed} failed)`);
