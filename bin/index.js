@@ -58,13 +58,23 @@ function getDomain (req)
     return domain || `http://${req.get('Host')}/`;
 }
 
+function errorMessage (error)
+{
+    // mostly made for the errors the jsonld library outputs
+    let msg = error.toString();
+    if (error.details && error.details.cause)
+        msg += '\n' + errorMessage(error.details.cause);
+    return msg;
+}
+
 function handleError (error, res)
 {
+    console.error(errorMessage(error));
     console.error(error);
     if (error.name === 'HTTP')
         res.sendStatus(error.message);
     else
-        res.status(500).send(error.message || error);
+        res.status(500).send(errorMessage(error));
 }
 
 function respond(req, res, thingy)
@@ -116,7 +126,7 @@ app.get('/bundles/npm/:package/README', (req, res) =>
             return res.sendStatus(404);
         
         res.type('text').send(json.readme);
-    }).catch(e => { console.error(e); res.status(500).send(e.message || e); });
+    }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
 });
 
 app.get('/bundles/npm/:package/:version', (req, res) =>
@@ -128,7 +138,7 @@ app.get('/bundles/npm/:package/:version', (req, res) =>
             res.redirect(307, module.getUri() + (req._filetype ? '.' + req._filetype : ''));
         else
             return respond(req, res, module);
-    }).catch(e => { console.error(e); res.status(500).send(e.message || e); });
+    }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
 });
 
 app.get('/bundles/npm/:package/:version/scripts/:script', (req, res) =>
@@ -146,7 +156,7 @@ app.get('/bundles/npm/:package/:version/scripts/:script', (req, res) =>
             
             res.type('text').send(json.scripts[req.params.script]);
         });
-    }).catch(e => { console.error(e); res.status(500).send(e.message || e); });
+    }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
 });
 
 app.get('/users/npm/:user', (req, res) =>
