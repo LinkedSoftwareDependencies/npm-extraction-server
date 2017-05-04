@@ -24,6 +24,7 @@
         "spdx"         : "http://spdx.org/rdf/terms#",
         "license"      : { "@id": "spdx:licenseDeclared", "@type": "@id" },
         "shasum"       : "spdx:checksum",
+        "files"        : "spdx:hasFile",
 
         "foaf"         : "http://xmlns.com/foaf/0.1/",
         "author"       : "foaf:maker",
