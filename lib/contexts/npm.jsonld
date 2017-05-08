@@ -55,6 +55,9 @@
         "pre-commit"           : { "@id": "npm:pre-commit",         "@type": "@id" },
         "precommit"            : { "@id": "npm:pre-commit",         "@type": "@id" },
         "gitHead"              : "npm:gitHead",
-        "main"                 : "npm:main"
+        "main"                 : "npm:main",
+
+        "lsdc"                 : "http://linkedsoftwaredependencies.org/vocabulary/components#",
+        "lsd:component"        : { "@id": "lsdc:hasComponent" }
     }
 }
