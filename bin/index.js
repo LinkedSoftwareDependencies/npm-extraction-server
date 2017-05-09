@@ -157,7 +157,7 @@ app.get('/bundles/npm/:package/:version/scripts/:script', (req, res) =>
     pkg.getModule(req.params.version).then(module =>
     {
         if (module.version !== req.params.version)
-            return res.redirect(307, module.getUri() + '/scripts/' + req.params.script);
+            return res.redirect(307, module.getUri() + '/scripts/' + encodeURIComponent(req.params.script));
             
         return module.getJson().then(json =>
         {
