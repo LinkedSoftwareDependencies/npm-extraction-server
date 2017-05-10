@@ -24,12 +24,12 @@ server setup
     apt-get install nodejs
     apt-get install couchdb
     edit /etc/couchdb/local.ini :
-        [httpd]
-        secure_rewrites = false
+            [httpd]
+            secure_rewrites = false
+    curl -X PUT http://localhost:5984/_config/admins/admin -d '"admin"'
     service couchdb restart
     curl -X POST -H "Content-Type:application/json" \
-        http://localhost:5984/_replicate -d \
-        '{"source":"https://replicate.npmjs.com/registry/","target":"npm","create_target":true,"continuous":true}'
+        http://localhost:5984/_replicate -d '{"source":"https://replicate.npmjs.com/registry/","target":"http://admin:admin@127.0.0.1:5984/npm","create_target":true,"continuous":true}'
     add my ssh keys to .ssh
     do this: https://serverfault.com/questions/107187/ssh-agent-forwarding-and-sudo-to-another-user
     git clone ssh://git@git.datasciencelab.ugent.be:4444/linked-data-fragments/npm-stuff.git /opt/npm-stuff
