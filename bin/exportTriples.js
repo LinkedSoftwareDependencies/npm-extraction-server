@@ -3,6 +3,7 @@ const _ = require('lodash');
 const fs = require('fs');
 const nock = require('nock');
 const path = require('path');
+const jsonld = require('jsonld');
 const readline = require('readline');
 const JsonLdParser = require('../lib/util/JsonLdParser');
 const NpmCouchDb = require('../lib/npm/NpmCouchDb');
@@ -63,10 +64,15 @@ if (errorFile && fs.existsSync(errorFile))
 
 // TODO: change URL when it is fixed
 // set up proxy for context
-nock(domain)
-    .persist()
-    .get('/contexts/npm')
-    .replyWithFile(200, path.join(__dirname, '../lib/contexts/npm.jsonld'), { 'content-type': 'application/ld+json'});
+let context = JSON.parse(fs.readFileSync(path.join(__dirname, '../lib/contexts/npm.jsonld')));
+let nodeDocumentLoader = jsonld.documentLoaders.node();
+let customLoader = (url, callback) =>
+{
+    if (url === domain + 'contexts/npm')
+        return callback(null, {contextUrl: null, document: context, documentUrl: url});
+    nodeDocumentLoader(url, callback);
+};
+jsonld.documentLoader = customLoader;
 
 // TODO: this doesn't include engines (and people, but all those triples are included in the package triples)
 if (input)
