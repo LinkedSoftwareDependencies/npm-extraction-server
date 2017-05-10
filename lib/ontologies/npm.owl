@@ -8,7 +8,6 @@
 
 <http://linkedsoftwaredependencies.org/ontologies/npm#> a owl:Ontology ;
      dc:title "The npm ontology" ;
-     # owl:imports ...
      rdfs:comment "This ontology describes several of the components that appear in an npm package";
      rdfs:seeAlso <https://docs.npmjs.com/files/package.json>,
                   <https://github.com/npm/registry/blob/master/docs/REGISTRY-API.md>.
