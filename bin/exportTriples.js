@@ -1,7 +1,6 @@
 
 const _ = require('lodash');
 const fs = require('fs');
-const nock = require('nock');
 const path = require('path');
 const jsonld = require('jsonld');
 const readline = require('readline');
