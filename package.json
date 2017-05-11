@@ -15,6 +15,7 @@
     "spdx-correct": "^2.0.0",
     "spdx-expression-parse": "^1.0.4",
     "tar-stream": "^1.5.2",
-    "uuid": "^3.0.1"
+    "uuid": "^3.0.1",
+    "valid-url": "^1.0.9"
   }
 }
