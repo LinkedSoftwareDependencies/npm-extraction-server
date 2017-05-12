@@ -14,6 +14,7 @@
         "doap"         : "http://usefulinc.com/ns/doap#",
         "name"         : "doap:name",
         "versions"     : { "@id": "doap:release", "@type": "@id", "@container": "@index" },
+        "bundle"       : { "@reverse": "doap:release", "@type": "@id" },
         "version"      : "doap:revision",
         "dist"         : "doap:file-release",
         "bugs"         : "doap:bug-database",

@@ -55,5 +55,5 @@ server setup
     
     cd ~
     sudo -s
-    node --max_old_space_size=4096 /opt/npm-stuff/bin/exportTriples.js -c http://localhost:5984/npm -d http://linkedsoftwaredependencies.org/ -e failed.log -E errors.log -t ttl > /var/data/npm.ttl
+    node --max_old_space_size=4096 /opt/npm-stuff/bin/exportTriples.js -c http://localhost:5984/npm -d https://linkedsoftwaredependencies.org/ -e failed.log -E errors.log -t ttl > /var/data/npm.ttl
     /opt/hdt-cpp/hdt-lib/tools/rdf2hdt -f turtle /var/data/npm.ttl /var/data/npm.hdt
