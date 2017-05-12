@@ -145,7 +145,7 @@ app.get('/bundles/npm/:package/:version', (req, res) =>
         if (module.version !== req.params.version)
             res.location(module.getUri() + (req._filetype ? '.' + req._filetype : ''))
                     .status(307)
-                    .send(`<${oldModule.getUri()}> https://linkedsoftwaredependencies.org/vocabularies/npm#maxSatisfying <${module.getUri()}>`);
+                    .send(`<${oldModule.getUri()}> <https://linkedsoftwaredependencies.org/vocabularies/npm#maxSatisfying> <${module.getUri()}>.`);
         else
             return respond(req, res, module);
     }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
