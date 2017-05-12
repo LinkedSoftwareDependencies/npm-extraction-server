@@ -60,7 +60,7 @@
         "gitHead"              : "npm:gitHead",
         "main"                 : "npm:main",
 
-        "lsdc"                 : "https://linkedsoftwaredependencies.org/vocabularies/components#",
-        "lsd:component"        : { "@id": "lsdc:hasComponent" }
+        "oo"                   : "https://linkedsoftwaredependencies.org/vocabularies/object-oriented#",
+        "lsd:components"       : { "@id": "oo:components" }
     }
 }
