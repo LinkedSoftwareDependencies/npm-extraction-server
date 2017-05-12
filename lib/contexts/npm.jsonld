@@ -42,7 +42,7 @@
         "description"  : "dcterms:abstract",
         "readme"       : { "@id": "dcterms:description", "@type": "@id" },
 
-        "npm"                  : "http://linkedsoftwaredependencies.org/contexts/npm#",
+        "npm"                  : "https://linkedsoftwaredependencies.org/contexts/npm#",
         "engines"              : { "@id": "npm:engine",             "@type": "@id", "@container": "@index"  },
         "dependencies"         : { "@id": "npm:dependency",         "@type": "@id", "@container": "@index"  },
         "devDependencies"      : { "@id": "npm:devDependency",      "@type": "@id", "@container": "@index"  },
@@ -57,7 +57,7 @@
         "gitHead"              : "npm:gitHead",
         "main"                 : "npm:main",
 
-        "lsdc"                 : "http://linkedsoftwaredependencies.org/vocabularies/components#",
+        "lsdc"                 : "https://linkedsoftwaredependencies.org/vocabularies/components#",
         "lsd:component"        : { "@id": "lsdc:hasComponent" }
     }
 }

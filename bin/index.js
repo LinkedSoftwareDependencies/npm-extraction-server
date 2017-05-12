@@ -43,7 +43,7 @@ app.use((req, res, next) =>
         {
             req._filetype = filetype;
             req.url = req.url.substring(0, idx);
-            res.set('Link', `<http://${req.get('Host')}${req.url}>; rel="canonical"`);
+            res.set('Link', `<https://${req.get('Host')}${req.url}>; rel="canonical"`);
         }
     }
     next();
@@ -56,7 +56,7 @@ app.get('/', (req, res) => {
 
 function getDomain (req)
 {
-    return domain || `http://${req.get('Host')}/`;
+    return domain || `https://${req.get('Host')}/`;
 }
 
 function errorMessage (error)
@@ -145,7 +145,7 @@ app.get('/bundles/npm/:package/:version', (req, res) =>
         if (module.version !== req.params.version)
             res.location(module.getUri() + (req._filetype ? '.' + req._filetype : ''))
                     .status(307)
-                    .send(`<${oldModule.getUri()}> http://linkedsoftwaredependencies.org/vocabularies/npm#maxSatisfying <${module.getUri()}>`);
+                    .send(`<${oldModule.getUri()}> https://linkedsoftwaredependencies.org/vocabularies/npm#maxSatisfying <${module.getUri()}>`);
         else
             return respond(req, res, module);
     }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
