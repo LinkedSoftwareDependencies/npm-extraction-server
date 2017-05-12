@@ -3,10 +3,13 @@
     {
         "xsd"          : "http://www.w3.org/2001/XMLSchema#",
         "rdfs"         : "http://www.w3.org/2000/01/rdf-schema#",
-        "owl"          : "http://www.w3.org/2002/07/owl#",
 
         "url"          : "@id",
         "tarball"      : "@id",
+
+        "owl"          : "http://www.w3.org/2002/07/owl#",
+        "owl:sameAs"   : { "@type": "@id" },
+
 
         "doap"         : "http://usefulinc.com/ns/doap#",
         "name"         : "doap:name",
