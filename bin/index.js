@@ -193,12 +193,6 @@ app.get('/contexts/:name', (req, res) =>
     res.type('application/ld+json').sendFile(p, {}, e => { if (e) res.sendStatus(404) });
 });
 
-app.get('/vocabularies/:name', (req, res) =>
-{
-    let p = path.join(__dirname, `../lib/vocabularies/${encodeURIComponent(req.params.name)}.owl`);
-    res.type('text/turtle').sendFile(p, {}, e => { if (e) res.sendStatus(404) });
-});
-
 app.listen(port, () => {
     console.log(`Listening on port ${port}.`);
 });
