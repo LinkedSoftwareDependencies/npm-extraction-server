@@ -57,7 +57,7 @@
         "gitHead"              : "npm:gitHead",
         "main"                 : "npm:main",
 
-        "lsdc"                 : "http://linkedsoftwaredependencies.org/vocabulary/components#",
+        "lsdc"                 : "http://linkedsoftwaredependencies.org/vocabularies/components#",
         "lsd:component"        : { "@id": "lsdc:hasComponent" }
     }
 }

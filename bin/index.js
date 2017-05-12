@@ -145,7 +145,7 @@ app.get('/bundles/npm/:package/:version', (req, res) =>
         if (module.version !== req.params.version)
             res.location(module.getUri() + (req._filetype ? '.' + req._filetype : ''))
                     .status(307)
-                    .send(`<${oldModule.getUri()}> http://linkedsoftwaredependencies.org/ontologies/npm#maxSatisfying <${module.getUri()}>`);
+                    .send(`<${oldModule.getUri()}> http://linkedsoftwaredependencies.org/vocabularies/npm#maxSatisfying <${module.getUri()}>`);
         else
             return respond(req, res, module);
     }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
@@ -193,9 +193,9 @@ app.get('/contexts/:name', (req, res) =>
     res.type('application/ld+json').sendFile(p, {}, e => { if (e) res.sendStatus(404) });
 });
 
-app.get('/ontologies/:name', (req, res) =>
+app.get('/vocabularies/:name', (req, res) =>
 {
-    let p = path.join(__dirname, `../lib/ontologies/${encodeURIComponent(req.params.name)}.owl`);
+    let p = path.join(__dirname, `../lib/vocabularies/${encodeURIComponent(req.params.name)}.owl`);
     res.type('text/turtle').sendFile(p, {}, e => { if (e) res.sendStatus(404) });
 });
 

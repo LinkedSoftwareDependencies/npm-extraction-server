@@ -3,10 +3,10 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix doap: <http://usefulinc.com/ns/doap#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix npm: <http://linkedsoftwaredependencies.org/ontologies/npm#> .
+@prefix npm: <http://linkedsoftwaredependencies.org/vocabularies/npm#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-<http://linkedsoftwaredependencies.org/ontologies/npm#> a owl:Ontology ;
+<http://linkedsoftwaredependencies.org/vocabularies/npm#> a owl:Ontology ;
      dc:title "The npm ontology" ;
      rdfs:comment "This ontology describes several of the components that appear in an npm package";
      rdfs:seeAlso <https://docs.npmjs.com/files/package.json>,
@@ -16,7 +16,7 @@
 npm:engine a rdf:property;
     rdfs:label "engine";
     rdfs:comment "indicates an engine dependency";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -24,7 +24,7 @@ npm:engine a rdf:property;
 npm:dependency a rdf:property;
     rdfs:label "dependency";
     rdfs:comment "indicates a package dependency";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -32,7 +32,7 @@ npm:dependency a rdf:property;
 npm:devDependency a rdf:property;
     rdfs:label "devDependency";
     rdfs:comment "indicates a package dependency for development";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -40,7 +40,7 @@ npm:devDependency a rdf:property;
 npm:peerDependency a rdf:property;
     rdfs:label "peerDependency";
     rdfs:comment "indicates compatibility with the given package";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -48,7 +48,7 @@ npm:peerDependency a rdf:property;
 npm:optionalDependency a rdf:property;
     rdfs:label "optionalDependency";
     rdfs:comment "a dependency that can be used but is not required";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:subPropertyOf dcterms:requires;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
@@ -56,66 +56,66 @@ npm:optionalDependency a rdf:property;
 npm:bundledDependency a rdf:property;
     rdfs:label "bundledDependency";
     rdfs:comment "indicates packages that will be bundled with this release";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range doap:Project.
 
 npm:dist-tag a rdf:property;
     rdfs:label "dist-tag";
     rdfs:comment "a npm dist-tag associated with this version";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range rdfs:Literal.
 
 npm:maxSatisfying a rdf:property;
     rdfs:label "maxSatisfying";
     rdfs:comment "maps a semantic versioned URI to the maximum satisfying version";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
     
 npm:nodeVersion a rdf:property;
     rdfs:label "nodeVersion";
     rdfs:comment "which node version was used to publish this version";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
     
 npm:npmVersion a rdf:property;
     rdfs:label "npmVersion";
     rdfs:comment "which npm version was used to publish this version";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range doap:Version.
     
 npm:gitHead a rdf:property;
     rdfs:label "gitHead";
     rdfs:comment "git head when this version was published";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range rdfs:Literal.
 
 npm:main a rdf:property
     rdfs:label "main";
     rdfs:comment "the main file to execute";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range rdfs:Literal.
 
 npm:pre-commit a rdf:property
     rdfs:label "pre-commit";
     rdfs:comment "script to execute before committing";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:domain doap:Version;
     rdfs:range npm:Script.
 
 npm:key a rdf:property
     rdfs:label "key";
     rdfs:comment "used together with npm:value to generically describe the contents of package.json";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>;
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>;
     rdfs:range npm:Literal.
 
 npm:value a rdf:property
     rdfs:label "value";
     rdfs:comment "used together with npm:key to generically describe the contents of package.json";
-    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/ontologies/npm#>.
+    rdfs:isDefinedBy <http://linkedsoftwaredependencies.org/vocabularies/npm#>.
