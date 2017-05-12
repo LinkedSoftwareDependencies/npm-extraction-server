@@ -61,18 +61,6 @@ if (failedFile && fs.existsSync(failedFile))
 if (errorFile && fs.existsSync(errorFile))
     fs.unlinkSync(errorFile);
 
-// TODO: change URL when it is fixed
-// set up proxy for context
-let context = JSON.parse(fs.readFileSync(path.join(__dirname, '../lib/contexts/npm.jsonld')));
-let nodeDocumentLoader = jsonld.documentLoaders.node();
-let customLoader = (url, callback) =>
-{
-    if (url === domain + 'contexts/npm')
-        return callback(null, {contextUrl: null, document: context, documentUrl: url});
-    nodeDocumentLoader(url, callback);
-};
-jsonld.documentLoader = customLoader;
-
 // TODO: this doesn't include engines (and people, but all those triples are included in the package triples)
 if (input)
 {
