@@ -91,8 +91,8 @@ function respond(req, res, thingy)
     function handleFormat (format) { return thingy.getJsonLd(req.query.output).then(json => JsonLdParser.toRDF(json, {format: format, root: getDomain(req)})); }
     
     let formatResponses = {
-        'application/json': () => thingy.getJsonLd().then(json => res.type('application/ld+json').send(json)).catch(errorHandler),
-        'application/ld+json': () => thingy.getJsonLd().then(json => res.send(json)).catch(errorHandler)
+        'application/json': () => thingy.getJsonLd(req.query.output).then(json => res.type('application/ld+json').send(json)).catch(errorHandler),
+        'application/ld+json': () => thingy.getJsonLd(req.query.output).then(json => res.send(json)).catch(errorHandler)
     };
     
     // browser-interpretable display of the results
@@ -104,7 +104,7 @@ function respond(req, res, thingy)
             if (req._filetype === 'json')
                 return thingy.getJson().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
             if (req._filetype === 'jsonld')
-                return thingy.getJsonLd().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
+                return thingy.getJsonLd(req.query.output).then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
         
             let type = formatMap[req._filetype];
             if (!type)
