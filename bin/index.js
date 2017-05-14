@@ -37,12 +37,13 @@ app.use((req, res, next) =>
 {
     if (debug && req.accepts('text/html'))
     {
-        let idx = req.url.lastIndexOf('.');
-        let filetype = req.url.substring(idx + 1).toLowerCase();
+        let path = req._parsedUrl.pathname;
+        let idx = path.lastIndexOf('.');
+        let filetype = path.substring(idx + 1).toLowerCase();
         if (filetype === 'json' || filetype === 'jsonld' || formatMap[filetype])
         {
             req._filetype = filetype;
-            req.url = req.url.substring(0, idx);
+            req.url = path.substring(0, idx) + (req._parsedUrl.search || '');
             res.set('Link', `<https://${req.get('Host')}${req.url}>; rel="canonical"`);
         }
     }
@@ -87,7 +88,7 @@ function handleError (error, res)
 function respond(req, res, thingy)
 {
     function errorHandler (e) { handleError(e, res); }
-    function handleFormat (format) { return thingy.getJsonLd().then(json => JsonLdParser.toRDF(json, {format: format, root: getDomain(req)})); }
+    function handleFormat (format) { return thingy.getJsonLd(req.query.output).then(json => JsonLdParser.toRDF(json, {format: format, root: getDomain(req)})); }
     
     let formatResponses = {
         'application/json': () => thingy.getJsonLd().then(json => res.type('application/ld+json').send(json)).catch(errorHandler),

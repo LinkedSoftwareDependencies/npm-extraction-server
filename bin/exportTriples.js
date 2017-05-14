@@ -19,7 +19,7 @@ let formatMap = {
 };
 
 let args = require('minimist')(process.argv.slice(2));
-if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 't', 's', 'i', 'o', 'e', 'E'])) || !args.c || !args.d)
+if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 't', 's', 'i', 'e', 'E'])) || !args.c || !args.d)
 {
     console.error('usage: node generateTriples.js -c CouchDB -d domain [-f format] [-s start] [-i] [-o] [-e file] [-E file]');
     console.error(' options:');
@@ -34,8 +34,6 @@ if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c
     console.error('               Can be used if output got interrupted previously. E.g.: "-s n3"');
     console.error('  -i         : Read bundle names from stdin instead of parsing all bundles.');
     console.error('               Names should be separated by newlines.');
-    console.error('  -o         : Provide additional triples (such as max matching URIs of semantic versions.');
-    console.error('               Such as max matching URIs of semantic versions.');
     console.error('  -e file    : Write failed bundles to the given file.');
     console.error('  -E file    : Write failed bundles + error messages to the given file.');
     console.error(' supported formats (default is nt):');
@@ -49,7 +47,6 @@ let domain = args.d;
 let format = args.t ? formatMap[args.t] : formatMap['nt'];
 let couchDB = new NpmCouchDb(args.c);
 let input = args.i;
-let output = args.o;
 let failedFile = args.e;
 let errorFile = args.E;
 let failed = 0;
@@ -130,8 +127,8 @@ function exportRecursive (idx, list)
         });
         
         // generate all entries first so no partial results get output if there is an error
-        let promises = modules.map(module => module.getJsonLd(output).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
-        promises.push(bundle.getJsonLd(output).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
+        let promises = modules.map(module => module.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
+        promises.push(bundle.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
         return Promise.all(promises);
     }).then(entries =>
     {
