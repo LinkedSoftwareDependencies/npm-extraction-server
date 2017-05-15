@@ -57,7 +57,7 @@ app.get('/', (req, res) => {
 
 function getDomain (req)
 {
-    return domain || `https://${req.get('Host')}/`;
+    return domain || `${req.protocol}://${req.get('Host')}/`;
 }
 
 function errorMessage (error)
@@ -174,6 +174,12 @@ app.get('/users/npm/:user', (req, res) =>
 {
     let user = new NpmUser(req.params.user, getDomain(req), couchDB);
     respond(req, res, user);
+});
+
+app.get('/engines/:engine/', (req, res) =>
+{
+    let engine = new NodeEngineBundle(req.params.engine, getDomain(req));
+    respond(req, res, engine);
 });
 
 app.get('/engines/:engine/:version', (req, res) =>
