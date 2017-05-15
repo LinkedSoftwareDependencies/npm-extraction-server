@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright © 2017 Ruben Taelman
+Copyright © 2017 Joachim Van Herwegen
 Ghent University – imec, Belgium
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
