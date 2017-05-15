@@ -57,9 +57,11 @@
         "_nodeVersion"         : { "@id": "npm:nodeVersion",        "@type": "@id" },
         "_npmVersion"          : { "@id": "npm:npmVersion",         "@type": "@id" },
         "pre-commit"           : { "@id": "npm:pre-commit",         "@type": "@id" },
-        "precommit"            : { "@id": "npm:pre-commit",         "@type": "@id" },
         "gitHead"              : "npm:gitHead",
         "main"                 : "npm:main",
+
+        "npmc"                 : "https://linkedsoftwaredependencies.org/vocabularies/npm-custom#",
+        "precommit"            : { "@id": "npmc:pre-commit", "@type": "@id" },
 
         "oo"                   : "https://linkedsoftwaredependencies.org/vocabularies/object-oriented#",
         "lsd:components"       : { "@id": "oo:components" }
