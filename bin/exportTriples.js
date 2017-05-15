@@ -8,6 +8,8 @@ const JsonLdParser = require('../lib/util/JsonLdParser');
 const NpmCouchDb = require('../lib/npm/NpmCouchDb');
 const NpmBundle = require('../lib/npm/NpmBundle');
 const NpmModule = require('../lib/npm/NpmModule');
+const NodeEngineBundle = require('../lib/npm/NodeEngineBundle');
+const NodeEngineModule = require('../lib/npm/NodeEngineModule');
 
 let formatMap = {
     'jsonld': 'application/ld+json',
@@ -58,7 +60,6 @@ if (failedFile && fs.existsSync(failedFile))
 if (errorFile && fs.existsSync(errorFile))
     fs.unlinkSync(errorFile);
 
-// TODO: this doesn't include engines (and people, but all those triples are included in the package triples)
 if (input)
 {
     // storing entries in list to have progress indicator
@@ -72,18 +73,29 @@ if (input)
             exportRecursive(lines.length-1, lines);
     });
 }
+
 else
 {
-    process.stderr.write('Loading bundles...');
-    couchDB.all().then(list =>
-    {
-        let start_idx = 0;
-        if (startBundle)
-            start_idx = list.indexOf(startBundle);
-        if (start_idx < 0)
-            throw new Error('Unknown bundle ' + startBundle);
-        exportRecursive(start_idx, list);
-    }).catch(console.error);
+    process.stderr.write('Loading engines...');
+    exportEngine('node')
+        .then(() => exportEngine('iojs'))
+        .then(() =>
+        {
+            process.stderr.clearLine();
+            process.stderr.cursorTo(0);
+            process.stderr.write('Loading bundles...');
+            return couchDB.all();
+        })
+        .then(list =>
+        {
+            let start_idx = 0;
+            if (startBundle)
+                start_idx = list.indexOf(startBundle);
+            if (start_idx < 0)
+                throw new Error('Unknown bundle ' + startBundle);
+            exportRecursive(start_idx, list);
+        })
+        .catch(console.error);
 }
 
 function errorMessage (error)
@@ -147,5 +159,27 @@ function exportRecursive (idx, list)
         }
         catch (e) { console.error (e); }
         exportRecursive(++idx, list);
+    });
+}
+
+function exportEngine (engine)
+{
+    running = true;
+    process.stderr.clearLine();
+    process.stderr.cursorTo(0);
+    process.stderr.write(`Exporting engine ${engine}`);
+    
+    let bundle = new NodeEngineBundle(engine, domain);
+    return bundle.getJson().then(json =>
+    {
+        let modules = json.map(entry => new NodeEngineModule(engine, entry.version, domain));
+        let promises = modules.map(module => module.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
+        promises.push(bundle.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
+        return Promise.all(promises);
+    }).then(entries =>
+    {
+        for (let entry of entries)
+            console.log(entry);
+        running = false;
     });
 }
