@@ -1,7 +1,3 @@
-Provides support for converting npm packages to RDF.
-Better readme pending.
-
-See https://linkedsoftwaredependencies.github.io/Article-Reproducability/ for more details.
 
 # npm extraction server
 
@@ -23,6 +19,8 @@ Both of these will be described below.
 Both of these also require access to a CouchDB instance hosting this npm metadata.
 This can either be the existing npm [registry](https://registry.npmjs.com/),
 or a local [replication](https://docs.npmjs.com/misc/registry) of this data.
+
+See https://linkedsoftwaredependencies.github.io/Article-Reproducability/ for more details.
 
 ## Server
 The server can be started by running `bin/index.js`.
