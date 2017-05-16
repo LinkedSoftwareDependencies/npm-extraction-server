@@ -23,7 +23,7 @@ let formatMap = {
 let args = require('minimist')(process.argv.slice(2));
 if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 't', 's', 'i', 'e', 'E'])) || !args.c || !args.d)
 {
-    console.error('usage: node generateTriples.js -c CouchDB -d domain [-f format] [-s start] [-i] [-o] [-e file] [-E file]');
+    console.error('usage: node bin/generateTriples.js -c CouchDB -d domain [-f format] [-s start] [-i] [-o] [-e file] [-E file]');
     console.error(' options:');
     console.error('  -c CouchDB : Uses the given CouchDB URL');
     console.error('               E.g. "-c http://localhost:5984/npm")');

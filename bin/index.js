@@ -12,7 +12,7 @@ const NodeEngineBundle = require('../lib/npm/NodeEngineBundle');
 let args = require('minimist')(process.argv.slice(2));
 if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'p', 'c', 'd', 'debug'])) || !args.p || !args.c)
 {
-    console.error('usage: node index.js -p port -c CouchDB_Url [-d domain_name] [--debug]');
+    console.error('usage: node bin/index.js -p port -c CouchDB_Url [-d domain_name] [--debug]');
     return process.exit((args.h || args.help) ? 0 : 1);
 }
 
