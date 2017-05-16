@@ -1,0 +1,3 @@
+[submodule "lib/contexts"]
+	path = lib/contexts
+	url = git@github.com:LinkedSoftwareDependencies/context-npm.git
