@@ -73,17 +73,14 @@ if (input)
             exportRecursive(lines.length-1, lines);
     });
 }
-
 else
 {
-    process.stderr.write('Loading engines...');
+    writeProgress('Loading engines...');
     exportEngine('node')
         .then(() => exportEngine('iojs'))
         .then(() =>
         {
-            process.stderr.clearLine();
-            process.stderr.cursorTo(0);
-            process.stderr.write('Loading bundles...');
+            writeProgress('Loading bundles...');
             return couchDB.all();
         })
         .then(list =>
@@ -96,6 +93,16 @@ else
             exportRecursive(start_idx, list);
         })
         .catch(console.error);
+}
+
+function writeProgress (str)
+{
+    if (process.stderr.isTTY)
+    {
+        process.stderr.clearLine();
+        process.stderr.cursorTo(0);
+        process.stderr.write(str);
+    }
 }
 
 function errorMessage (error)
@@ -116,16 +123,12 @@ function errorMessage (error)
 function exportRecursive (idx, list)
 {
     running = true;
-    process.stderr.clearLine();
-    process.stderr.cursorTo(0);
-    process.stderr.write(`Exporting bundle ${idx}/${list.length} (${failed} failed)`);
+    writeProgress(`Exporting bundle ${idx}/${list.length} (${failed} failed)`);
     
     if (idx >= list.length)
     {
         running = false;
-        process.stderr.clearLine();
-        process.stderr.cursorTo(0);
-        process.stderr.write(`Exported ${list.length-failed} bundles succesfully (${failed} failed)`);
+        writeProgress(`Exported ${list.length-failed} bundles succesfully (${failed} failed)`);
         return;
     }
     
@@ -165,9 +168,7 @@ function exportRecursive (idx, list)
 function exportEngine (engine)
 {
     running = true;
-    process.stderr.clearLine();
-    process.stderr.cursorTo(0);
-    process.stderr.write(`Exporting engine ${engine}`);
+    writeProgress(`Exporting engine ${engine}`);
     
     let bundle = new NodeEngineBundle(engine, domain);
     return bundle.getJson().then(json =>
