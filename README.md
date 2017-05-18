@@ -29,6 +29,8 @@ so make sure to clone with
 git clone --recursive
 ```
 
+and to also update the submodule when pulling.
+
 ## Server
 The server can be started by running `bin/index.js`.
 The command to start it is
