@@ -22,6 +22,13 @@ or a local [replication](https://docs.npmjs.com/misc/registry) of this data.
 
 See https://linkedsoftwaredependencies.github.io/Article-Reproducability/ for more details.
 
+## Installation notes
+This repository makes use of a submodule in `lib/contexts`,
+so make sure to clone with
+```
+git clone --recursive
+```
+
 ## Server
 The server can be started by running `bin/index.js`.
 The command to start it is
