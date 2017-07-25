@@ -142,8 +142,8 @@ function exportRecursive (idx, list)
         });
         
         // generate all entries first so no partial results get output if there is an error
-        let promises = modules.map(module => module.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
-        promises.push(bundle.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
+        let promises = modules.map(module => module.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: module.getUri() })));
+        promises.push(bundle.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: bundle.getUri() })));
         return Promise.all(promises);
     }).then(entries =>
     {
@@ -174,8 +174,8 @@ function exportEngine (engine)
     return bundle.getJson().then(json =>
     {
         let modules = json.map(entry => new NodeEngineModule(engine, entry.version, domain));
-        let promises = modules.map(module => module.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
-        promises.push(bundle.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: domain })));
+        let promises = modules.map(module => module.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: module.getUri() })));
+        promises.push(bundle.getJsonLd(true).then(json => JsonLdParser.toRDF(json, { format, root: bundle.getUri() })));
         return Promise.all(promises);
     }).then(entries =>
     {

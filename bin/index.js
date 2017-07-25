@@ -88,7 +88,7 @@ function handleError (error, res)
 function respond(req, res, thingy)
 {
     function errorHandler (e) { handleError(e, res); }
-    function handleFormat (format) { return thingy.getJsonLd(req.query.output).then(json => JsonLdParser.toRDF(json, {format: format, root: getDomain(req)})); }
+    function handleFormat (format) { return thingy.getJsonLd(req.query.output).then(json => JsonLdParser.toRDF(json, {format: format, root: thingy.getUri()})); }
     
     let formatResponses = {
         'application/json': () => thingy.getJsonLd(req.query.output).then(json => res.type('application/ld+json').send(json)).catch(errorHandler),

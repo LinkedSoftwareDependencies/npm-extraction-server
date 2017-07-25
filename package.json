@@ -3,15 +3,17 @@
   "version": "0.1.1",
   "description": "Convert npm package.json database to RDF.",
   "author": {
-    "name" : "Joachim Van Herwegen",
-    "email" : "joachim.vanherwegen@ugent.be"
+    "name": "Joachim Van Herwegen",
+    "email": "joachim.vanherwegen@ugent.be"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/LinkedSoftwareDependencies/npm-extraction-server.git"
   },
-  "engines" : { "node" : "5.12.0" },
+  "engines": {
+    "node": "5.12.0"
+  },
   "main": "bin/index.js",
   "keywords": [
     "lsd",
@@ -32,7 +34,7 @@
     "spdx-correct": "^2.0.0",
     "spdx-expression-parse": "^1.0.4",
     "tar-stream": "^1.5.2",
-    "uuid": "^3.0.1",
+    "url-join": "^2.0.2",
     "valid-url": "^1.0.9"
   }
 }
