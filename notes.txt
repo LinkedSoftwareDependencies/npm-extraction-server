@@ -37,7 +37,7 @@ server setup
     cd /opt/npm-stuff
     npm install
     screen
-    node bin/index.js -p 80 -c http://localhost:5984/npm -d http://linkedsoftwaredependencies.org --debug
+    node bin/index.js -p 1337 -c http://localhost:5984/npm -d https://linkedsoftwaredependencies.org/
     
     cd ~
     git clone git@github.com:drobilla/serd.git
