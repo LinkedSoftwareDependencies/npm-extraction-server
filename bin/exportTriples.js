@@ -21,9 +21,9 @@ let formatMap = {
 };
 
 let args = require('minimist')(process.argv.slice(2));
-if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 't', 's', 'i', 'e', 'E'])) || !args.c || !args.d)
+if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c', 'd', 't', 'T', 's', 'i', 'e', 'E'])) || !args.c || !args.d)
 {
-    console.error('usage: node bin/generateTriples.js -c CouchDB -d domain [-f format] [-s start] [-i] [-o] [-e file] [-E file]');
+    console.error('usage: node bin/generateTriples.js -c CouchDB -d domain [-f format] [-T time] [-s start] [-i] [-o] [-e file] [-E file]');
     console.error(' options:');
     console.error('  -c CouchDB : Uses the given CouchDB URL');
     console.error('               E.g. "-c http://localhost:5984/npm")');
@@ -32,6 +32,8 @@ if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c
     console.error('               "http://example.org/bundles/npm/n3"');
     console.error('  -t type    : Output format, see below for a full list of supported formats');
     console.error('               E.g.: "-t nt"');
+    console.error('  -T time    : Only output bundles that changed since the given date.');
+    console.error('               E.g.: "-T 2017-05-19T00:00:00.000Z"');
     console.error('  -s start   : Starts output from the given bundle, ignoring previous bundles.');
     console.error('               Can be used if output got interrupted previously. E.g.: "-s n3"');
     console.error('  -i         : Read bundle names from stdin instead of parsing all bundles.');
@@ -47,7 +49,10 @@ if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c
 let startBundle = args.s;
 let domain = args.d;
 let format = args.t ? formatMap[args.t] : formatMap['nt'];
+if (!format)
+    throw new Error('Invalid format ' + args.t);
 let couchDB = new NpmCouchDb(args.c);
+let time = args.T;
 let input = args.i;
 let failedFile = args.e;
 let errorFile = args.E;
@@ -76,12 +81,17 @@ if (input)
 else
 {
     writeProgress('Loading engines...');
-    exportEngine('node')
-        .then(() => exportEngine('iojs'))
+    let initPromise = Promise.resolve();
+    if (!time && !startBundle)
+        initPromise = exportEngine('node').then(() => exportEngine('iojs'));
+    initPromise
         .then(() =>
         {
             writeProgress('Loading bundles...');
-            return couchDB.all();
+            if (time)
+                return couchDB.getChanges(time).then(list => _.map(list, 'name'));
+            else
+                return couchDB.all();
         })
         .then(list =>
         {
