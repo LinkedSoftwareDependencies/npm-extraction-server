@@ -50,6 +50,18 @@ app.use((req, res, next) =>
     next();
 });
 
+// @org/package middleware
+app.use((req, res, next) =>
+{
+    let url = req.url;
+    if (url.startsWith('/bundles/npm/@')) {
+        // this causes express to interpret the org/package combination as the package name
+        url = url.replace(/^\/bundles\/npm\/@([^/]+)\/([^/]+)/, '/bundles/npm/@$1%2f$2');
+        req.url = url;
+    }
+    next();
+});
+
 
 app.get('/', (req, res) => {
     res.sendStatus(200);
