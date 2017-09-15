@@ -32,8 +32,8 @@ if (args.h || args.help || args._.length > 0 || !_.isEmpty(_.omit(args, ['_', 'c
     console.error('               "http://example.org/bundles/npm/n3"');
     console.error('  -t type    : Output format, see below for a full list of supported formats');
     console.error('               E.g.: "-t nt"');
-    console.error('  -T time    : Only output bundles that changed since the given date.');
-    console.error('               E.g.: "-T 2017-05-19T00:00:00.000Z"');
+    console.error('  -T time    : Only output bundles that changed on the given date.');
+    console.error('               E.g.: "-T 2017-05-19"');
     console.error('  -s start   : Starts output from the given bundle, ignoring previous bundles.');
     console.error('               Can be used if output got interrupted previously. E.g.: "-s n3"');
     console.error('  -i         : Read bundle names from stdin instead of parsing all bundles.');
@@ -53,6 +53,11 @@ if (!format)
     throw new Error('Invalid format ' + args.t);
 let couchDB = new NpmCouchDb(args.c);
 let time = args.T;
+if (time)
+{
+    let match = time.match(/^(\d\d\d\d)-(\d\d?)-(\d\d?)$/);
+    time = { year: parseInt(match[1],10), month: parseInt(match[2],10), day: parseInt(match[3],10) };
+}
 let input = args.i;
 let failedFile = args.e;
 let errorFile = args.E;
@@ -89,12 +94,13 @@ else
         {
             writeProgress('Loading bundles...');
             if (time)
-                return couchDB.getChanges(time).then(list => _.map(list, 'name'));
+                return couchDB.getChanges(time.year, time.month, time.day);
             else
                 return couchDB.all();
         })
         .then(list =>
         {
+            console.log(list);
             let start_idx = 0;
             if (startBundle)
                 start_idx = list.indexOf(startBundle);
