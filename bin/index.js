@@ -3,6 +3,7 @@ const _ = require('lodash');
 const express = require('express');
 const path = require('path');
 const JsonLdParser = require('../lib/util/JsonLdParser');
+const Tarball = require('../lib/util/Tarball');
 const NpmCouchDb = require('../lib/npm/NpmCouchDb');
 const NpmBundle = require('../lib/npm/NpmBundle');
 const NpmModule = require('../lib/npm/NpmModule');
@@ -97,19 +98,31 @@ function handleError (error, res)
         res.status(500).send(errorMessage(error));
 }
 
+function getContentNegotiation(req, res, jsonldPromise, root)
+{
+    function errorHandler (e) { handleError(e, res); }
+
+    let formatResponses = {
+        'application/ld+json': () => jsonldPromise.then(jsonld => res.type('application/ld+json').send(jsonld)).catch(errorHandler),
+    };
+    formatResponses['application/json'] = formatResponses['application/ld+json'];
+
+    for (let type in formatMap)
+        formatResponses[formatMap[type]] = () => JsonLdParser.toRDF(jsonld, {format: formatMap[type], root}).catch(errorHandler);
+
+    return formatResponses;
+}
+
 function respond(req, res, thingy)
 {
     function errorHandler (e) { handleError(e, res); }
     function handleFormat (format) { return thingy.getJsonLd(req.query.output).then(json => JsonLdParser.toRDF(json, {format: format, root: thingy.getUri()})); }
-    
-    let formatResponses = {
-        'application/json': () => thingy.getJsonLd(req.query.output).then(json => res.type('application/ld+json').send(json)).catch(errorHandler),
-        'application/ld+json': () => thingy.getJsonLd(req.query.output).then(json => res.send(json)).catch(errorHandler)
-    };
+
+    let conneg = getContentNegotiation(req, res, thingy.getJsonLd(), thingy.getUri());
     
     // browser-interpretable display of the results
     if (debug)
-        formatResponses['text/html'] = () =>
+        conneg['text/html'] = () =>
         {
             if (!req._filetype)
                 req._filetype = 'json';
@@ -125,10 +138,7 @@ function respond(req, res, thingy)
             handleFormat(type).then(data => res.type('text').send(data)).catch(errorHandler);
         };
     
-    for (let type in formatMap)
-        formatResponses[formatMap[type]] = () => handleFormat(formatMap[type]).then(data => res.send(data)).catch(errorHandler);
-    
-    res.format(formatResponses);
+    res.format(conneg);
 }
 
 app.get('/bundles/npm/:package', (req, res) =>
@@ -179,6 +189,35 @@ app.get('/bundles/npm/:package/:version/scripts/:script', (req, res) =>
             
             res.type('text').send(json.scripts[req.params.script]);
         });
+    }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
+});
+
+app.get('/bundles/npm/:package/:version/:path(*)', (req, res) =>
+{
+    let pkg = new NpmBundle(req.params.package, getDomain(req), couchDB);
+    let oldModule = new NpmModule(req.params.package, req.params.version, getDomain(req));
+    pkg.getModule(req.params.version)
+        .then(module =>
+        {
+            if (module.version !== req.params.version)
+                return res.location(module.getUri() + '/' + req.params.path + (req._filetype ? '.' + req._filetype : ''))
+                    .status(307)
+                    .send(`<${oldModule.getUri()}> <https://linkedsoftwaredependencies.org/vocabularies/npm#maxSatisfying> <${module.getUri()}/${req.params.path}>.`);
+
+            return module.getJson().then(json => {
+                let contexts = json['lsd:contexts'];
+                if (!contexts || !json.dist || !json.dist.tarball)
+                    return res.sendStatus(404);
+
+                for (let key in contexts) {
+                    if (contexts[key] === req.params.path) {
+                        let jsonld = module.getTarball().then(data => JSON.parse(Tarball.resolvePath(req.params.path, data)));
+                        let conneg = getContentNegotiation(req, res, jsonld, pkg.getUri());
+                        return res.format(conneg);
+                    }
+                }
+                res.sendStatus(404);
+            });
     }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
 });
 
