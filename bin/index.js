@@ -205,12 +205,12 @@ app.get('/bundles/npm/:package/:version/:path(*)', (req, res) =>
                     .send(`<${oldModule.getUri()}> <https://linkedsoftwaredependencies.org/vocabularies/npm#maxSatisfying> <${module.getUri()}/${req.params.path}>.`);
 
             return module.getJson().then(json => {
-                let contexts = json['lsd:contexts'];
-                if (!contexts || !json.dist || !json.dist.tarball)
+                let paths = json['lsd:importPaths'];
+                if (!paths || !json.dist || !json.dist.tarball)
                     return res.sendStatus(404);
 
-                for (let key in contexts) {
-                    if (contexts[key] === req.params.path) {
+                for (let key in paths) {
+                    if (req.params.path.indexOf(paths[key]) >= 0) {
                         let jsonld = module.getTarball().then(data => JSON.parse(Tarball.resolvePath(req.params.path, data)));
                         let conneg = getContentNegotiation(req, res, jsonld, pkg.getUri());
                         return res.format(conneg);
