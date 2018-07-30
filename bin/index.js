@@ -206,17 +206,35 @@ app.get('/bundles/npm/:package/:version/:path(*)', (req, res) =>
 
             return module.getJson().then(json => {
                 let paths = json['lsd:importPaths'];
-                if (!paths || !json.dist || !json.dist.tarball)
+                let contexts = json['lsd:contexts'];
+                if ((!paths && !contexts) || !json.dist || !json.dist.tarball)
                     return res.sendStatus(404);
 
-                for (let key in paths) {
-                    if (req.params.path.indexOf(paths[key]) >= 0) {
-                        let jsonld = module.getTarball().then(data => JSON.parse(Tarball.resolvePath(req.params.path, data)));
-                        let conneg = getContentNegotiation(req, res, jsonld, pkg.getUri());
-                        return res.format(conneg);
+                let valid = false;
+                if (paths) {
+                    for (let key in paths) {
+                        if (req.params.path.indexOf(paths[key]) >= 0) {
+                            valid = true;
+                            break;
+                        }
+                    }
+                } else if (contexts) {
+                    // backwards compatability for configs without lsd:importPaths
+                    for (let key in contexts) {
+                        if (contexts[key] === req.params.path) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-                res.sendStatus(404);
+
+                if (valid) {
+                    let jsonld = module.getTarball().then(data => JSON.parse(Tarball.resolvePath(req.params.path, data)));
+                    let conneg = getContentNegotiation(req, res, jsonld, pkg.getUri());
+                    res.format(conneg);
+                } else {
+                    res.sendStatus(404);
+                }
             });
     }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
 });
