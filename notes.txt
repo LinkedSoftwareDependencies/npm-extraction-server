@@ -16,6 +16,8 @@ CouchDB
     search: http://docs.couchdb.org/en/2.0.0/api/database/find.html
     build index: https://spin.atomicobject.com/2017/01/19/utility-to-initiate-the-rebuild-of-indices-for-couchdb-design-document-views/
 
+curl http://admin:admin@127.0.0.1:5984/_active_tasks
+
 curl -X POST http://127.0.0.1:5984/_replicate -d "{\"source\": \"https://replicate.npmjs.com/registry/\", \"target\":\"http://test:test@127.0.0.1:5984/npm2\", \"create_target\":true}" -H "Content-Type: application/json"
 
 node bin\exportTriples.js -c http://localhost:5984/npm2 -d http://example.org -e failed.log | sed "/^\s*$/d" | wc -l
