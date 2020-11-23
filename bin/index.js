@@ -1,5 +1,6 @@
 
 const _ = require('lodash');
+const cors = require('cors')
 const express = require('express');
 const path = require('path');
 const JsonLdParser = require('../lib/util/JsonLdParser');
@@ -23,6 +24,8 @@ let couchDB = new NpmCouchDb(args.c);
 let domain = args.d;
 
 let app = express();
+
+app.use(cors());
 
 // json and json-ld are covered separately
 let formatMap = {

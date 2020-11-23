@@ -1,6 +1,6 @@
 {
   "name": "npm-extraction-server",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Convert npm package.json database to RDF.",
   "author": {
     "name": "Joachim Van Herwegen",
@@ -22,6 +22,7 @@
     "node"
   ],
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.15.2",
     "jsonld": "^0.4.11",
     "lodash": "^4.17.4",
