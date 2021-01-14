@@ -122,7 +122,7 @@ function respond(req, res, thingy)
     function handleFormat (format) { return thingy.getJsonLd(req.query.output).then(json => JsonLdParser.toRDF(json, {format: format, root: thingy.getUri()})); }
 
     let conneg = getContentNegotiation(req, res, thingy.getJsonLd(), thingy.getUri());
-    
+
     // browser-interpretable display of the results
     if (debug)
         conneg['text/html'] = () =>
@@ -133,14 +133,14 @@ function respond(req, res, thingy)
                 return thingy.getJson().then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
             if (req._filetype === 'jsonld')
                 return thingy.getJsonLd(req.query.output).then(data => res.type('json').send(JSON.stringify(data, null, 2))).catch(errorHandler);
-        
+
             let type = formatMap[req._filetype];
             if (!type)
                 return res.sendStatus(404);
-        
+
             handleFormat(type).then(data => res.type('text').send(data)).catch(errorHandler);
         };
-    
+
     res.format(conneg);
 }
 
@@ -157,7 +157,7 @@ app.get('/bundles/npm/:package/README', (req, res) =>
     {
         if (!json.readme)
             return res.sendStatus(404);
-        
+
         res.type('text').send(json.readme);
     }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
 });
@@ -184,12 +184,12 @@ app.get('/bundles/npm/:package/:version/scripts/:script', (req, res) =>
     {
         if (module.version !== req.params.version)
             return res.redirect(307, module.getUri() + '/scripts/' + encodeURIComponent(req.params.script));
-            
+
         return module.getJson().then(json =>
         {
             if (!json.scripts || !json.scripts[req.params.script])
                 return res.sendStatus(404);
-            
+
             res.type('text').send(json.scripts[req.params.script]);
         });
     }).catch(e => { console.error(e); res.status(500).send(errorMessage(e)); });
@@ -208,25 +208,29 @@ app.get('/bundles/npm/:package/:version/:path(*)', (req, res) =>
                     .send(`<${oldModule.getUri()}> <https://linkedsoftwaredependencies.org/vocabularies/npm#maxSatisfying> <${module.getUri()}/${req.params.path}>.`);
 
             return module.getJson().then(json => {
-                let paths = json['lsd:importPaths'];
-                let contexts = json['lsd:contexts'];
-                if ((!paths && !contexts) || !json.dist || !json.dist.tarball)
-                    return res.sendStatus(404);
+                // In case lsd:importPaths is true we always need to download the tarball to check
+                let valid = json['lsd:module'] === true;
 
-                let valid = false;
-                if (paths) {
-                    for (let key in paths) {
-                        if (req.params.path.indexOf(paths[key]) >= 0) {
-                            valid = true;
-                            break;
+                if (!valid) {
+                    let paths = json['lsd:importPaths'];
+                    let contexts = json['lsd:contexts'];
+                    if ((!paths && !contexts) || !json.dist || !json.dist.tarball)
+                        return res.sendStatus(404);
+
+                    if (paths) {
+                        for (let key in paths) {
+                            if (req.params.path.indexOf(paths[key]) >= 0) {
+                                valid = true;
+                                break;
+                            }
                         }
-                    }
-                } else if (contexts) {
-                    // backwards compatability for configs without lsd:importPaths
-                    for (let key in contexts) {
-                        if (contexts[key] === req.params.path) {
-                            valid = true;
-                            break;
+                    } else if (contexts) {
+                        // backwards compatability for configs without lsd:importPaths
+                        for (let key in contexts) {
+                            if (contexts[key] === req.params.path) {
+                                valid = true;
+                                break;
+                            }
                         }
                     }
                 }
