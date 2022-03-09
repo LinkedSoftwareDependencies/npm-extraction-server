@@ -110,9 +110,6 @@ function getContentNegotiation(req, res, jsonldPromise, root)
     };
     formatResponses['application/json'] = formatResponses['application/ld+json'];
 
-    for (let type in formatMap)
-        formatResponses[formatMap[type]] = () => JsonLdParser.toRDF(jsonld, {format: formatMap[type], root}).catch(errorHandler);
-
     return formatResponses;
 }
 
